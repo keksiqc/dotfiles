@@ -1,5 +1,4 @@
 Set-Alias vim nvim
-Set-Alias ll ls
 Set-Alias g git
 Set-Alias cat bat
 Set-Alias cc cookiecutter
