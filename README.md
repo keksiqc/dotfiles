@@ -1,6 +1,6 @@
 # Dotfiles
 
-This repository contains my personal dotfiles. They are free to use and can serve as a starting point for your own configuration or just as an inspiration. Some of the configuration files are inspired by [Christian Lempa's dotfiles](https://github.com/christianlempa/dotfiles-win) and [devaslife's YouTube video](https://www.youtube.com/watch?v=5-aK2_WwrmM&t=621s).
+This repository contains my personal dotfiles. They are free to use and can serve as a starting point for your own configuration or just as an inspiration. Some of the configuration files are inspired by [Christian Lempa's dotfiles](https://github.com/christianlempa/dotfiles-win) and [devaslife's YouTube video](https://www.youtube.com/watch?v=5-aK2_WwrmM).
 
 ## Installation
 
