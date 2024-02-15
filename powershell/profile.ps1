@@ -4,6 +4,9 @@
 # git
 Import-Module posh-git
 
+# Terminal-Icons
+Import-Module -Name Terminal-Icons
+
 # oh-my-posh
 # Import-Module oh-my-posh
 # $THEMEPATH = "C:\Users\marlo\AppData\Local\oh-my-posh\themes"
@@ -12,7 +15,8 @@ Import-Module posh-git
 # Starship
 Invoke-Expression (&starship init powershell)
 
-Import-Module -Name Terminal-Icons
+# zoxide
+Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
 # PSReadLine
 Set-PSReadLineOption -EditMode Emacs

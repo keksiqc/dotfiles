@@ -1,3 +1,4 @@
+Set-Alias cd z -Option AllScope
 Set-Alias vim nvim
 Set-Alias g git
 Set-Alias cat bat
