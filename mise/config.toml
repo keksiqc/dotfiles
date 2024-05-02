@@ -1,0 +1,11 @@
+[tools]
+python = "latest"
+node = "latest"
+bun = "latest"
+deno = "latest"
+rust = "latest"
+go = "latest"
+act = "latest"
+hcloud = "latest"
+bundler = "latest"
+
