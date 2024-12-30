@@ -8,4 +8,5 @@ go = "latest"
 act = "latest"
 hcloud = "latest"
 bundler = "latest"
-
+ruby = "latest"
+uv = "latest"
