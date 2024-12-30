@@ -4,3 +4,11 @@ pypoetry/
 shell-ask/
 configstore/
 yarn/
+tmux/
+warp-terminal/
+.wrangler/
+astro/
+go/
+gopls/
+
+hub
