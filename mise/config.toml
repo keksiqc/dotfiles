@@ -13,3 +13,4 @@ uv = "latest"
 
 [settings]
 python.uv_venv_auto = true
+experimental = true
