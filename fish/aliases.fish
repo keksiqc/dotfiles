@@ -1,6 +1,6 @@
-alias poe poetry
 alias bat batcat
 alias cat batcat
+alias uvr "uv run"
 alias ls "eza --icons"
 alias ll "eza --long --header --icons --git --no-permissions --no-user"
 alias la "eza --long --header --icons --git --no-permissions --no-user --all"
