@@ -9,17 +9,21 @@
   <img alt="License" src="https://custom-icon-badges.demolab.com/github/license/keksiqc/dotfiles?style=for-the-badge&logo=law&color=6a9955&logoColor=f7f7f7&labelColor=1e1e1e" />
 </p>
 
-----
+---
+
 # Terminal Preview
+
 <p align="center">
     <img alt="Terminal Preview" src="https://github.com/keksiqc/dotfiles/blob/main/assets/terminal.png" width="100%">
 </p>
 
 ---
+
 # Details
-+ OS: Windows
-+ WSL: Ubuntu
-+ Shell: Fish
-+ Prompt: Starship
-+ Terminal: Windows Terminal
-+ Color Scheme: Rosé Pine
+
+- OS: Windows
+- WSL: Ubuntu
+- Shell: Fish
+- Prompt: Starship
+- Terminal: Windows Terminal
+- Color Scheme: Rosé Pine
