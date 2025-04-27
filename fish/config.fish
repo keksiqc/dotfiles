@@ -1,12 +1,132 @@
-if status is-interactive
-    # Commands to run in interactive sessions can go here
-end
+# set greeting
+set fish_greeting "$(macchina)"
 
-# set theme
+# https://github.com/jorgebucaran/fisher
+# curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+# fisher install rose-pine/fish
 fish_config theme choose "Rosé Pine"
 
-# load aliases from .config/fish/aliases.fish
-source ~/.config/fish/aliases.fish
+# -------------------------------- #
+# Directory Listing (eza)
+# -------------------------------- #
+# https://github.com/eza-community/eza
+
+alias ls="eza --icons"
+alias ll="eza --long --header --icons --git --no-permissions --no-user"
+alias la="eza --long --header --icons --git --no-permissions --no-user --all"
+
+# -------------------------------- #
+# File Preview (bat)
+# -------------------------------- #
+
+alias bat=batcat
+alias cat=batcat
+
+# -------------------------------- #
+# Node Package Manager
+# -------------------------------- #
+# https://github.com/antfu/ni
+
+alias nrr="nr -r"
+alias ng="na -g"
+alias nio="ni --prefer-offline"
+alias s="nr start"
+alias d="nr dev"
+alias b="nr build"
+alias bw="nr build --watch"
+alias t="nr test"
+alias tu="nr test -u"
+alias tw="nr test --watch"
+alias w="nr watch"
+alias p="nr play"
+alias c="nr typecheck"
+alias lint="nr lint"
+alias lintf="nr lint --fix"
+alias release="nr release"
+alias re="nr release"
+
+# -------------------------------- #
+# Python Package Manager
+# -------------------------------- #
+# https://github.com/astral-sh/uv
+
+alias uvr="uv run"
+
+# -------------------------------- #
+# Git
+# -------------------------------- #
+
+# Use github/hub
+alias git=hub
+
+# -------------------------------- #
+# Directories
+#
+# I put
+# `~/i` for my projects
+# `~/f` for forks
+# `~/r` for reproductions
+# -------------------------------- #
+
+function i
+  if test -z "$argv[1]"
+    cd ~/i
+    return
+  end
+  cd ~/i/$argv[1]
+end
+
+function forks
+  if test -z "$argv[1]"
+    cd ~/f
+    return
+  end
+  cd ~/f/$argv[1]
+end
+
+function repros
+  if test -z "$argv[1]"
+    cd ~/r
+    return
+  end
+  cd ~/r/$argv[1]
+end
+
+function dir
+  if test -z "$argv[1]"
+    echo "Usage: dir <directory>"
+    return 1
+  end
+  mkdir $argv[1]; and cd $argv[1]
+end
+
+function clone
+  if test (count $argv) -lt 2
+    hub clone $argv; and cd (basename $argv[1] .git)
+  else
+    hub clone $argv; and cd $argv[2]
+  end
+end
+
+function clonei
+  i; and clone $argv; and code .; and cd -2
+end
+
+function cloner
+  repros; and clone $argv; and code .; and cd -2
+end
+
+function clonef
+  forks; and clone $argv; and code .; and cd -2
+end
+
+function codei
+  i; and code $argv; and cd -
+end
+
+# -------------------------------- #
+# Initialization
+# -------------------------------- #
 
 # starship
 starship init fish | source
@@ -14,8 +134,8 @@ starship init fish | source
 # zoxide
 zoxide init fish | source
 
-# pipx
-set PATH $PATH /root/.local/bin
+# atuin
+atuin init fish | source
 
 # mise
 ~/.local/bin/mise activate fish | source
@@ -23,12 +143,11 @@ set PATH $PATH /root/.local/bin
 # brew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-# set greeting
-set fish_greeting "$(macchina)"
 # pnpm
 set -gx PNPM_HOME "/home/keksi/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
   set -gx PATH "$PNPM_HOME" $PATH
 end
-# pnpm end
+
+# corepack
 corepack enable
