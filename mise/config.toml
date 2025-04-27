@@ -5,10 +5,6 @@ bun = "latest"
 deno = "latest"
 rust = "latest"
 go = "latest"
-act = "latest"
-hcloud = "latest"
-bundler = "latest"
-ruby = "latest"
 uv = "latest"
 
 [settings]
