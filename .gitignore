@@ -10,5 +10,7 @@ warp-terminal/
 astro/
 go/
 gopls/
+containers/
+cni/
 
 hub
