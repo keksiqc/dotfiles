@@ -6,6 +6,7 @@ deno = "latest"
 rust = "latest"
 go = "latest"
 uv = "latest"
+act = "latest"
 
 [settings]
 python.uv_venv_auto = true
