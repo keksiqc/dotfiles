@@ -11,9 +11,10 @@ fish_config theme choose "Rosé Pine"
 # -------------------------------- #
 # https://github.com/eza-community/eza
 
-alias ls="eza --icons"
-alias ll="eza --long --header --icons --git --no-permissions --no-user"
-alias la="eza --long --header --icons --git --no-permissions --no-user --all"
+alias l="eza -1 --group-directories-first --color=always --icons --git-ignore"
+alias ls="l --long --no-permissions --no-user"
+alias ll="l --long --header"
+alias la="ll --all"
 
 # -------------------------------- #
 # File Preview (bat)
