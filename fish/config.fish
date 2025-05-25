@@ -17,9 +17,11 @@ alias ll="l --long --header"
 alias la="ll --all"
 
 # -------------------------------- #
-# File Preview (bat)
+# Essentials
 # -------------------------------- #
 
+alias neofetch=macchina
+alias fetch=macchina
 alias bat=batcat
 alias cat=batcat
 
