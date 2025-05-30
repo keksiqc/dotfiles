@@ -20,6 +20,7 @@ alias la="ll --all"
 # Essentials
 # -------------------------------- #
 
+alias cd=z
 alias neofetch=macchina
 alias fetch=macchina
 alias bat=batcat
