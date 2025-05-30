@@ -59,8 +59,8 @@ alias uvr="uv run"
 # Git
 # -------------------------------- #
 
-# Use github/hub
-alias git=hub
+# Use jj-vcs/jj
+# alias git=jj
 
 # -------------------------------- #
 # Directories

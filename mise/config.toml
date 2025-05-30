@@ -10,6 +10,7 @@ act = "latest"
 ruff = "latest"
 biome = "latest"
 zoxide = "latest"
+jj = "latest"
 
 [settings]
 python.uv_venv_auto = true
