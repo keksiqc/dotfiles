@@ -105,9 +105,9 @@ end
 
 function clone
   if test (count $argv) -lt 2
-    hub clone $argv; and cd (basename $argv[1] .git)
+    git clone $argv; and cd (basename $argv[1] .git)
   else
-    hub clone $argv; and cd $argv[2]
+    git clone $argv; and cd $argv[2]
   end
 end
 
