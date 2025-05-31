@@ -132,6 +132,9 @@ end
 # Initialization
 # -------------------------------- #
 
+# mise
+~/.local/bin/mise activate fish | source
+
 # starship
 starship init fish | source
 
@@ -140,9 +143,6 @@ zoxide init fish | source
 
 # atuin
 atuin init fish | source
-
-# mise
-~/.local/bin/mise activate fish | source
 
 # brew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
