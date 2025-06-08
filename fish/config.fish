@@ -133,7 +133,7 @@ end
 # -------------------------------- #
 
 # mise
-~/.local/bin/mise activate fish | source
+mise activate fish | source
 
 # starship
 starship init fish | source
