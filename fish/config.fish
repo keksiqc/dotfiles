@@ -63,6 +63,31 @@ alias uvr="uv run"
 # alias git=jj
 
 # -------------------------------- #
+# Initialization
+# -------------------------------- #
+
+# mise
+mise activate fish | source
+
+# starship
+starship init fish | source
+
+# zoxide
+zoxide init fish | source
+
+# atuin
+atuin init fish | source
+
+# pnpm
+set -gx PNPM_HOME "/home/keksi/.local/share/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+
+# corepack
+corepack enable
+
+# -------------------------------- #
 # Directories
 #
 # I put
@@ -126,28 +151,3 @@ end
 function codei
   i; and code $argv; and cd -
 end
-
-# -------------------------------- #
-# Initialization
-# -------------------------------- #
-
-# mise
-mise activate fish | source
-
-# starship
-starship init fish | source
-
-# zoxide
-zoxide init fish | source
-
-# atuin
-atuin init fish | source
-
-# pnpm
-set -gx PNPM_HOME "/home/keksi/.local/share/pnpm"
-if not string match -q -- $PNPM_HOME $PATH
-  set -gx PATH "$PNPM_HOME" $PATH
-end
-
-# corepack
-corepack enable
