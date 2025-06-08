@@ -23,8 +23,7 @@ alias la="ll --all"
 alias cd=z
 alias neofetch=macchina
 alias fetch=macchina
-alias bat=batcat
-alias cat=batcat
+alias cat=bat
 
 # -------------------------------- #
 # Node Package Manager
