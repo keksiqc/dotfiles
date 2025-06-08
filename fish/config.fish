@@ -30,6 +30,8 @@ alias cat=bat
 # -------------------------------- #
 # https://github.com/antfu/ni
 
+export NI_GLOBAL_AGENT="pnpm"
+
 alias nrr="nr -r"
 alias ng="na -g"
 alias nio="ni --prefer-offline"
