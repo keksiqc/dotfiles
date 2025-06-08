@@ -144,9 +144,6 @@ zoxide init fish | source
 # atuin
 atuin init fish | source
 
-# brew
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
 # pnpm
 set -gx PNPM_HOME "/home/keksi/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
