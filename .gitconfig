@@ -1,7 +1,7 @@
 [user]
 	name = Keksi
 	email = me@keksi.dev
-	signingkey = 4D9427754533B071
+	signingkey = 197DE3FA0943F42E
 [core]
 	excludesfile = ~/.gitignore_global
 	pager = delta
