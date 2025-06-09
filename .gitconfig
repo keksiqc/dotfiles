@@ -1,14 +1,9 @@
 [user]
-	signingkey = 4D9427754533B071
 	name = Keksi
 	email = me@keksi.dev
-[commit]
-	gpgsign = true
-[credential "https://github.com"]
-	helper = !/usr/bin/gh auth git-credential
-[credential "https://gist.github.com"]
-	helper = !/usr/bin/gh auth git-credential
+	signingkey = 4D9427754533B071
 [core]
+	excludesfile = ~/.gitignore_global
 	pager = delta
 [interactive]
 	diffFilter = delta --color-only
@@ -16,3 +11,16 @@
 	navigate = true
 [merge]
 	conflictStyle = zdiff3
+[credential "https://github.com"]
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = !/usr/bin/gh auth git-credential
+[alias]
+	unstage = reset HEAD --
+	uncommit = reset --soft HEAD~
+[init]
+	defaultBranch = main
+[checkout]
+	defaultRemote = origin
+[commit]
+	gpgsign = true
