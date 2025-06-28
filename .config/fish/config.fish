@@ -1,5 +1,5 @@
 # set greeting
-set fish_greeting "$(macchina)"
+set fish_greeting "$(fastfetch)"
 
 # https://github.com/jorgebucaran/fisher
 # curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
