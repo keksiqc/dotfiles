@@ -30,7 +30,7 @@
 ### Dependencies
 
 ```bash
-yay -S curl wget stow fish starship fastfetch btop bat eza zoxide
+yay -S curl wget stow fish starship fastfetch btop bat eza zoxide git-delta
 ```
 
 [Atuin](https://atuin.sh/)
@@ -46,6 +46,11 @@ curl https://mise.run | sh
 [Fisher](https://github.com/jorgebucaran/fisher)
 ```bash
 curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+```
+
+[antfu/ni](https://github.com/antfu-collective/ni)
+```bash
+pnpm -g i @antfu/ni
 ```
 
 ## LICENSE
