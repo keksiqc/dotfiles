@@ -17,8 +17,6 @@
   <img alt="Terminal Preview" src="./assets/terminal.png" width="100%">
 </p>
 
----
-
 <p align="center">
   <sub>
     <samp>
