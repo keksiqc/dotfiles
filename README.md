@@ -25,6 +25,29 @@
   </sub>
 </p>
 
+## Installation
+
+### Dependencies
+
+```bash
+yay -S curl wget stow fish starship fastfetch btop bat eza zoxide
+```
+
+[Atuin](https://atuin.sh/)
+```bash
+curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+```
+
+[Mise](https://mise.jdx.dev/)
+```bash
+curl https://mise.run | sh
+```
+
+[Fisher](https://github.com/jorgebucaran/fisher)
+```bash
+curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+```
+
 ## LICENSE
 
 MIT
