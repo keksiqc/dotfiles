@@ -7,8 +7,6 @@ rust = "latest"
 go = "latest"
 uv = "latest"
 act = "latest"
-ruff = "latest"
-biome = "latest"
 
 [settings]
 python.uv_venv_auto = true
