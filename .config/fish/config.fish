@@ -21,8 +21,8 @@ alias la="ll --all"
 # -------------------------------- #
 
 alias cd=z
-alias neofetch=macchina
-alias fetch=macchina
+alias neofetch=fastfetch
+alias fetch=fastfetch
 alias cat=bat
 
 # -------------------------------- #
@@ -69,7 +69,7 @@ alias uvr="uv run"
 # -------------------------------- #
 
 # mise
-mise activate fish | source
+~/.local/bin/mise activate fish | source
 
 # starship
 starship init fish | source
