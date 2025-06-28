@@ -1,7 +1,7 @@
 <h1 align="center"><i>/home/keksi/.config</i></h1>
 
 <p align="center">
-    <img alt="Rose Pine png" src="https://github.com/rose-pine/rose-pine-theme/blob/main/assets/palette.png" width="150">
+  <img alt="Rose Pine png" src="https://github.com/rose-pine/rose-pine-theme/blob/main/assets/palette.png" width="150">
 </p>
 <p align="center">
   <img alt="Repo Size" src="https://custom-icon-badges.demolab.com/github/repo-size/keksiqc/dotfiles?style=for-the-badge&logo=file-zip&color=004b72&logoColor=f7f7f7&labelColor=1e1e1e" />
@@ -11,19 +11,25 @@
 
 ---
 
-# Terminal Preview
+<p align="center"><samp>Preview</samp></p>
 
 <p align="center">
-    <img alt="Terminal Preview" src="https://github.com/keksiqc/dotfiles/blob/main/assets/terminal.png" width="100%">
+  <img alt="Terminal Preview" src="./assets/terminal.png" width="100%">
 </p>
 
 ---
 
-# Details
+<p align="center">
+  <sub>
+    <samp>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbspTheme | <a href="https://rosepinetheme.com/">Rosé Pine</a><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Font | <a href="https://usgraphics.com/products/berkeley-mono">Berkeley Mono</a><br>
+      Shell | <a href="https://fishshell.com/">Fish</a><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prompt | <a href="https://starship.rs/">Starship</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </samp>
+  </sub>
+</p>
 
-- OS: Windows
-- WSL: Ubuntu
-- Shell: Fish
-- Prompt: Starship
-- Terminal: Windows Terminal
-- Color Scheme: Rosé Pine
+## LICENSE
+
+MIT
