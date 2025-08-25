@@ -12,5 +12,6 @@ go/
 gopls/
 containers/
 cni/
+atuin/
 
 hub
