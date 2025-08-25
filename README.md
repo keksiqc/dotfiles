@@ -36,7 +36,7 @@ sudo apt install -t nala nala
 ```
 
 ```bash
-sudo nala install -y curl wget stow fish starship fastfetch btop bat eza zoxide git-delta
+sudo nala install -y git gh curl wget stow fish starship fastfetch btop bat eza zoxide git-delta
 ```
 
 [Atuin](https://atuin.sh/)
