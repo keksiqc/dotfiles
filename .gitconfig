@@ -1,7 +1,7 @@
 [user]
 	name = Keksi
 	email = me@keksi.dev
-	signingkey = 9E7959862348AC01
+	signingkey = 68B869277CCA2EDD
 [core]
 	excludesfile = ~/.gitignore_global
 	pager = delta
@@ -24,3 +24,5 @@
 	defaultRemote = origin
 [commit]
 	gpgsign = true
+[gpg]
+	program = gpg
