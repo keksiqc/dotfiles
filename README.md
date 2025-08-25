@@ -30,7 +30,13 @@
 ### Dependencies
 
 ```bash
-yay -S curl wget stow fish starship fastfetch btop bat eza zoxide git-delta
+curl https://gitlab.com/volian/volian-archive/-/raw/main/install-nala.sh | bash
+
+sudo apt install -t nala nala
+```
+
+```bash
+sudo nala install -y curl wget stow fish starship fastfetch btop bat eza zoxide git-delta
 ```
 
 [Atuin](https://atuin.sh/)
