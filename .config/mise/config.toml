@@ -1,9 +1,9 @@
 [tools]
+usage = "latest"
 python = "latest"
 node = "latest"
 bun = "latest"
 deno = "latest"
-rust = "latest"
 go = "latest"
 uv = "latest"
 act = "latest"
