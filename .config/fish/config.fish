@@ -21,6 +21,7 @@ alias la="ll --all"
 # -------------------------------- #
 
 alias cd=z
+alias poe="uv run poe"
 alias neofetch=fastfetch
 alias fetch=fastfetch
 alias cat=batcat
