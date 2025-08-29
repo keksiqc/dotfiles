@@ -20,11 +20,11 @@ alias la="ll --all"
 # Essentials
 # -------------------------------- #
 
-alias cd=z
+alias cd="z"
 alias poe="uv run poe"
-alias neofetch=fastfetch
-alias fetch=fastfetch
-alias cat=batcat
+alias neofetch="fastfetch"
+alias fetch="fastfetch"
+alias cat="batcat"
 
 # -------------------------------- #
 # Node Package Manager
