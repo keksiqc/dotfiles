@@ -25,6 +25,32 @@
   </sub>
 </p>
 
+### Requirements
+
+1. Update system packages
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+2. Install curl
+
+```bash
+sudo apt install -y curl
+```
+
+3. (Optional) Enable passwordless sudo
+   This allows a user to run `sudo` commands without being prompted for a password.  
+   **Warning:** This reduces system security and should only be used in trusted environments.  
+
+```bash
+read -p "Enter the username to grant passwordless sudo: " USER && \
+sudo usermod -aG sudo "$USER" && \
+echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/"$USER" > /dev/null && \
+sudo chmod 440 /etc/sudoers.d/"$USER" && \
+echo "✅ User '$USER' can now use sudo without a password."
+```
+
 ### Installation
 
 1. Install Nala (optional, improves apt UX)
@@ -37,7 +63,7 @@ sudo apt install -y nala
 2. Base packages
 
 ```bash
-sudo nala install -y git gh curl wget stow fish starship fastfetch btop bat eza zoxide git-delta
+sudo nala install -y git gh wget stow fish starship fastfetch btop bat eza zoxide git-delta
 ```
 
 3. Clone and stow
