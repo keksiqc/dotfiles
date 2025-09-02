@@ -63,7 +63,7 @@ sudo apt install -y nala
 2. Base packages
 
 ```bash
-sudo nala install -y git gh wget stow fish starship fastfetch btop bat eza zoxide git-delta
+sudo nala install -y git gh wget curl stow fish starship fastfetch btop bat eza zoxide git-delta
 ```
 
 3. Clone and stow
