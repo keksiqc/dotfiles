@@ -80,6 +80,18 @@ stow -v --target="$HOME" .
 chsh -s /usr/bin/fish
 ```
 
+5. Login to GitHub CLI
+
+```bash
+gh auth login -s write:gpg_key
+```
+
+6. Run GPG script
+
+```bash
+chmod +x ./scripts/create_gpg_key.sh && ./scripts/create_gpg_key.sh
+```
+
 Then log out and back in.
 
 ### Optional tools
