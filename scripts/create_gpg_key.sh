@@ -3,7 +3,7 @@ set -euo pipefail
 
 # === CONFIGURATION ===
 NAME="Keksi"
-EMAIL="me@keksi.dev"
+EMAIL="git@keksi.dev"
 EXPIRE="3y"
 COMMENT="GitHub Signing Key"
 
