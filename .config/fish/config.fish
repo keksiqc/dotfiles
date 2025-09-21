@@ -1,5 +1,10 @@
-# set greeting
-set fish_greeting "$(fastfetch)"
+# disable greeting
+set fish_greeting ""
+
+# show fastfetch on interactive shell
+if status --is-interactive && type -q fastfetch
+   fastfetch
+end
 
 # https://github.com/jorgebucaran/fisher
 # curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
