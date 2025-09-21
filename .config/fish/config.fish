@@ -31,6 +31,7 @@ alias cat="batcat"
 # -------------------------------- #
 # https://github.com/antfu/ni
 
+export NI_DEFAULT_AGENT="bun"
 export NI_GLOBAL_AGENT="bun"
 
 alias nrr="nr -r"
