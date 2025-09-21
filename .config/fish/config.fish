@@ -31,7 +31,7 @@ alias cat="batcat"
 # -------------------------------- #
 # https://github.com/antfu/ni
 
-export NI_GLOBAL_AGENT="pnpm"
+export NI_GLOBAL_AGENT="bun"
 
 alias nrr="nr -r"
 alias ng="na -g"
