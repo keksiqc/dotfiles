@@ -80,7 +80,6 @@ alias uvr="uv run"
 
 # starship
 starship init fish | source
-enable_transience
 
 # zoxide
 zoxide init fish | source
