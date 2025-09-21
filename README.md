@@ -11,7 +11,7 @@
 <p align="center"><samp>Preview</samp></p>
 
 <p align="center">
-  <img alt="Terminal Preview" src="./assets/terminal.webp" width="100%">
+  <img alt="Terminal Preview" src="./assets/terminal.png" width="100%">
 </p>
 
 <p align="center">
