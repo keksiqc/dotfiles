@@ -57,6 +57,7 @@ git config --global user.email "$EMAIL"
 git config --global user.signingkey "$KEY_ID"
 git config --global commit.gpgsign true
 git config --global gpg.program gpg
+git config --global include.path "~/.dotfiles/.gitconfig"
 
 echo "🎉 All done!"
 echo "Your commits will now be signed with GPG key: $KEY_ID"
