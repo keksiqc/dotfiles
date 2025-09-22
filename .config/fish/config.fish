@@ -76,16 +76,24 @@ alias uvr="uv run"
 # -------------------------------- #
 
 # mise
-~/.local/bin/mise activate fish | source
+if type -q ~/.local/bin/mise
+  ~/.local/bin/mise activate fish | source
+end
 
 # starship
-starship init fish | source
+if type -q starship
+  starship init fish | source
+end
 
 # zoxide
-zoxide init fish | source
+if type -q zoxide
+  zoxide init fish | source
+end
 
 # atuin
-atuin init fish | source
+if type -q atuin
+  atuin init fish | source
+end
 
 # pnpm
 set -gx PNPM_HOME "/home/keksi/.local/share/pnpm"
@@ -94,7 +102,9 @@ if not string match -q -- $PNPM_HOME $PATH
 end
 
 # corepack
-corepack enable
+if type -q corepack
+  corepack enable
+end
 
 # -------------------------------- #
 # Directories
