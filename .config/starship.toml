@@ -89,7 +89,7 @@ renamed = '»($count)'
 deleted = '($count)'
 staged = '++($count)'
 ahead = '⇡($count)'
-diverged = '⇕[[](⇡($ahead_count))(⇣($behind_count))]'
+diverged = '⇕(⇡($ahead_count))(⇣($behind_count))'
 behind = '⇣($count)'
 
 [nodejs]
