@@ -77,11 +77,20 @@ truncation_symbol = "…/"
 [git_branch]
 symbol = ""
 style = "bg:yellow"
-format = '[[ $symbol $branch ](fg:crust bg:yellow)]($style)'
+format = '[[ $symbol $branch](fg:crust bg:yellow)]($style)'
 
 [git_status]
 style = "bg:yellow"
-format = '[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)'
+format = '[[* $all_status$ahead_behind ](fg:crust bg:yellow)]($style)'
+untracked = '?($count)'
+stashed = '$'
+modified = '!($count)'
+renamed = '»($count)'
+deleted = '($count)'
+staged = '++($count)'
+ahead = '⇡($count)'
+diverged = '⇕[[](⇡($ahead_count))(⇣($behind_count))]'
+behind = '⇣($count)'
 
 [nodejs]
 symbol = ""
