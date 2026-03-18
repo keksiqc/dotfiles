@@ -41,7 +41,7 @@ sudo apt install -y curl
 
 3. (Optional) Enable passwordless sudo
    This allows a user to run `sudo` commands without being prompted for a password.  
-   **Warning:** This reduces system security and should only be used in trusted environments.  
+   **Warning:** This reduces system security and should only be used in trusted environments.
 
 ```bash
 read -p "Enter the username to grant passwordless sudo: " USER && \

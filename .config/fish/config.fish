@@ -8,8 +8,8 @@ end
 
 # https://github.com/jorgebucaran/fisher
 # curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
-# fisher install rose-pine/fish
-fish_config theme choose "Rosé Pine"
+# fisher install catppuccin/fish
+fish_config theme choose "catppuccin-mocha"
 
 # -------------------------------- #
 # Directory Listing (eza)
@@ -29,7 +29,8 @@ alias cd="z"
 alias poe="uv run poe"
 alias neofetch="fastfetch"
 alias fetch="fastfetch"
-alias cat="batcat"
+alias bat="batcat"
+alias cat="bat"
 
 # -------------------------------- #
 # Node Package Manager
@@ -170,3 +171,16 @@ end
 function codei
   i; and code $argv; and cd -
 end
+
+# opencode
+fish_add_path /home/keksi/.opencode/bin
+
+# pnpm
+set -gx PNPM_HOME "/home/keksi/.local/share/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end
+
+# Vite+ bin (https://viteplus.dev)
+source "$HOME/.vite-plus/env.fish"
