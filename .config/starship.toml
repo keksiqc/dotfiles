@@ -81,16 +81,16 @@ format = '[[ $symbol $branch](fg:crust bg:yellow)]($style)'
 
 [git_status]
 style = "bg:yellow"
-format = '[[* $all_status$ahead_behind ](fg:crust bg:yellow)]($style)'
-untracked = '?($count)'
-stashed = '$'
-modified = '!($count)'
-renamed = '»($count)'
-deleted = '($count)'
-staged = '++($count)'
-ahead = '⇡($count)'
-diverged = '⇕(⇡($ahead_count))(⇣($behind_count))'
-behind = '⇣($count)'
+format = '[[* $all_status$ahead_behind](fg:crust bg:yellow)]($style)'
+untracked = '?($count) '
+stashed = '$ '
+modified = '!($count) '
+renamed = '»($count) '
+deleted = '($count) '
+staged = '++($count) '
+ahead = '⇡($count) '
+diverged = '⇕(⇡($ahead_count))(⇣($behind_count)) '
+behind = '⇣($count) '
 
 [nodejs]
 symbol = ""
@@ -135,7 +135,7 @@ format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
 [python]
 symbol = ""
 style = "bg:green"
-format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:crust bg:green)]($style)'
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
 
 [docker_context]
 symbol = ""
