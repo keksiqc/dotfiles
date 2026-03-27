@@ -8,6 +8,7 @@ go = "latest"
 uv = "latest"
 act = "latest"
 actionlint = "latest"
+ni = "latest"
 
 [settings]
 python.uv_venv_auto = true
