@@ -39,6 +39,10 @@ install_tool() {
     fi
 }
 
+show_header() {
+    gum style --border double --margin "0 1" --padding "0 2" --foreground 212 --bold "dot — dotfiles manager"
+}
+
 ensure_gum() {
     if command -v gum &>/dev/null; then return 0; fi
 
@@ -120,7 +124,8 @@ backup_conflicts() {
     warn "Backing up conflicting files..."
     while IFS= read -r file; do
         if [[ -n "$file" ]]; then
-            local backup="${file}.bak.$(date +%Y%m%d%H%M%S)"
+            local backup
+            backup="${file}.bak.$(date +%Y%m%d%H%M%S)"
             info "  $file -> $(basename "$backup")"
             mv "$file" "$backup"
         fi
@@ -299,6 +304,7 @@ cmd_remove() {
 
 show_menu() {
     ensure_gum
+    show_header
 
     local choice
     choice=$(gum choose \
@@ -331,29 +337,30 @@ show_menu() {
 }
 
 usage() {
-    cat <<EOF
-${BOLD}dot${NC} - dotfiles manager
-
-${BOLD}Usage:${NC}
-  dot                    Interactive menu
-  dot <command>          Run a command directly
-
-${BOLD}Commands:${NC}
-  install                Full setup (sudo, packages, stow, tools, shell, gh, gpg)
-  install <step>         Run a single install step:
-                           sudo, packages, stow, tools, shell, gh, gpg
-  update                 Pull latest changes and re-stow
-  remove                 Remove all dotfile symlinks
-
-${BOLD}Examples:${NC}
-  dot install            # full fresh setup
-  dot install stow       # just symlink configs
-  dot update             # pull & re-stow
-EOF
+    echo -e "${BOLD}dot${NC} - dotfiles manager"
+    echo ""
+    echo -e "${BOLD}Usage:${NC}"
+    echo "  dot                    Interactive menu"
+    echo "  dot <command>          Run a command directly"
+    echo ""
+    echo -e "${BOLD}Commands:${NC}"
+    echo "  install                Full setup (sudo, packages, stow, tools, shell, gh, gpg)"
+    echo "  install <step>         Run a single install step:"
+    echo "                           sudo, packages, stow, tools, shell, gh, gpg"
+    echo "  update                 Pull latest changes and re-stow"
+    echo "  remove                 Remove all dotfile symlinks"
+    echo ""
+    echo -e "${BOLD}Examples:${NC}"
+    echo "  dot install            # full fresh setup"
+    echo "  dot install stow       # just symlink configs"
+    echo "  dot update             # pull & re-stow"
 }
 
 main() {
     local cmd="${1:-}"
+
+    ensure_gum
+    [[ -n "$cmd" ]] && show_header
 
     if [[ -z "$cmd" ]]; then
         show_menu
