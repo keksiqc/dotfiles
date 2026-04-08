@@ -47,6 +47,7 @@ git clone https://github.com/keksiqc/dotfiles ~/.dotfiles
 ```
 
 This will guide you through:
+
 - Installing essential packages (git, fish, starship, stow, etc.)
 - Symlinking configs via stow
 - Optional tools (atuin, mise, fisher, ni)
