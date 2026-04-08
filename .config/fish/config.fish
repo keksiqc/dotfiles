@@ -16,10 +16,12 @@ fish_config theme choose "catppuccin-mocha"
 # -------------------------------- #
 # https://github.com/eza-community/eza
 
-alias l="eza -1 --group-directories-first --color=always --icons --git-ignore"
-alias ls="l --long --no-permissions --no-user"
-alias ll="l --long --header"
-alias la="ll --all"
+set -gx EZA_BASE "eza --group --header --group-directories-first --long --git --icons"
+
+alias l="$EZA_BASE -1"
+alias ls="$EZA_BASE --no-permissions --no-user"
+alias ll="$EZA_BASE"
+alias la="$EZA_BASE --all"
 
 # -------------------------------- #
 # Essentials
@@ -37,8 +39,8 @@ alias cat="bat"
 # -------------------------------- #
 # https://github.com/antfu/ni
 
-export NI_DEFAULT_AGENT="bun"
-export NI_GLOBAL_AGENT="bun"
+set -gx NI_DEFAULT_AGENT "bun"
+set -gx NI_GLOBAL_AGENT "bun"
 
 alias nrr="nr -r"
 alias ng="na -g"
@@ -110,4 +112,4 @@ end
 # pnpm end
 
 # Vite+ bin (https://viteplus.dev)
-source "$HOME/.vite-plus/env.fish"
+test -f "$HOME/.vite-plus/env.fish" && source "$HOME/.vite-plus/env.fish"
