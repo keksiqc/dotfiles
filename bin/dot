@@ -1,0 +1,376 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+STOW_TARGET="$HOME"
+
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+log_step()  { echo -e "${CYAN}${BOLD}==>${NC} $1"; }
+
+info()  { gum log --time TimeOnly --level info "$1"; }
+warn()  { gum log --time TimeOnly --level warn "$1"; }
+
+spin() {
+    local title="$1"; shift
+    gum spin --spinner dot --title "$title" -- "$@"
+}
+
+confirm() {
+    gum confirm "$1"
+}
+
+stow_log() {
+    stow "$@" 2>&1 | while IFS= read -r line; do info "$line"; done
+}
+
+install_tool() {
+    local name="$1" check="$2" install_cmd="$3"
+
+    if eval "$check"; then
+        info "$name already installed."
+    else
+        spin "Installing $name..." bash -c "$install_cmd"
+        info "$name installed."
+    fi
+}
+
+ensure_gum() {
+    if command -v gum &>/dev/null; then return 0; fi
+
+    log_error "gum is not installed. Installing gum..."
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+    sudo apt update && sudo apt install -y gum
+    info "gum installed."
+}
+
+cmd_install() {
+    local subcmd="${1:-}"
+
+    case "$subcmd" in
+        packages)  install_packages ;;
+        stow)      install_stow ;;
+        tools)     install_tools ;;
+        shell)     install_shell ;;
+        gh)        install_gh ;;
+        gpg)       install_gpg ;;
+        sudo)      install_sudo ;;
+        "")
+            install_sudo
+            echo ""
+            install_packages
+            echo ""
+            install_stow
+            echo ""
+            install_tools
+            echo ""
+            install_shell
+            echo ""
+            install_gh
+            echo ""
+            install_gpg
+            echo ""
+            gum style --foreground 212 --bold "Dotfiles installation complete!"
+            ;;
+        *)
+            log_error "Unknown install subcommand: $subcmd"
+            echo "Usage: dot install [packages|stow|tools|shell|gh|gpg]"
+            exit 1
+            ;;
+    esac
+}
+
+install_packages() {
+    log_step "Installing essential packages..."
+    local pkgs="git gh wget curl stow fish gpg starship fastfetch btop bat eza zoxide git-delta"
+
+    local needed=""
+    for pkg in $pkgs; do
+        if ! dpkg -s "$pkg" &>/dev/null 2>&1; then
+            needed="$needed $pkg"
+        fi
+    done
+
+    if [[ -z "$needed" ]]; then
+        info "All essential packages already installed."
+        return 0
+    fi
+
+    spin "Installing packages...$needed" bash -c "
+        export DEBIAN_FRONTEND=noninteractive
+        sudo apt update && sudo apt install -y $needed
+    "
+    info "Essential packages installed."
+}
+
+backup_conflicts() {
+    local conflicts
+    conflicts=$(stow --simulate --dir="$DOTFILES_DIR" --target="$STOW_TARGET" .config 2>&1 | grep -oP '(?<=existing target is neither a link nor a directory: ).*' || true)
+
+    if [[ -z "$conflicts" ]]; then
+        return 0
+    fi
+
+    warn "Backing up conflicting files..."
+    while IFS= read -r file; do
+        if [[ -n "$file" ]]; then
+            local backup="${file}.bak.$(date +%Y%m%d%H%M%S)"
+            info "  $file -> $(basename "$backup")"
+            mv "$file" "$backup"
+        fi
+    done <<< "$conflicts"
+}
+
+install_stow() {
+    log_step "Stowing dotfiles..."
+
+    if ! command -v stow &>/dev/null; then
+        log_error "stow is not installed. Run 'dot install packages' first."
+        exit 1
+    fi
+
+    backup_conflicts
+
+    stow_log --verbose=1 --dir="$DOTFILES_DIR" --target="$STOW_TARGET" .config
+
+    git config --global include.path "$DOTFILES_DIR/.gitconfig"
+    info "Git config include.path set."
+}
+
+install_tools() {
+    log_step "Optional tools..."
+    local tools
+    tools=$(gum choose --no-limit "atuin (history sync)" "mise (runtime manager)" "fisher (fish plugin manager)" || true)
+
+    if [[ -z "$tools" ]]; then
+        info "No optional tools selected."
+        return 0
+    fi
+
+    echo "$tools" | grep -q "atuin" && install_tool "atuin" "command -v atuin" 'curl --proto "=https" --tlsv1.2 -LsSf https://setup.atuin.sh | sh'
+    echo "$tools" | grep -q "mise"  && install_tool "mise"  "test -f \$HOME/.local/bin/mise" 'curl https://mise.run | sh'
+    echo "$tools" | grep -q "fisher" && install_tool "fisher" "test -f \$HOME/.config/fish/functions/fisher.fish" 'fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source; fisher install jorgebucaran/fisher"'
+}
+
+install_shell() {
+    local current_shell
+    current_shell=$(basename "$SHELL")
+    if [[ "$current_shell" == "fish" ]]; then
+        info "Fish is already your default shell."
+        return 0
+    fi
+
+    if ! confirm "Change default shell to fish?"; then
+        return 0
+    fi
+
+    chsh -s "$(command -v fish)"
+    info "Default shell changed to fish. Log out and back in to apply."
+}
+
+install_gh() {
+    if gh auth status &>/dev/null 2>&1; then
+        info "GitHub CLI already authenticated."
+        return 0
+    fi
+
+    if ! confirm "Login to GitHub CLI?"; then
+        return 0
+    fi
+
+    gh auth login -s write:gpg_key
+    info "GitHub CLI authenticated."
+}
+
+install_sudo() {
+    local user
+    user=$(whoami)
+
+    if sudo -n true 2>/dev/null; then
+        info "Passwordless sudo already configured for $user."
+        return 0
+    fi
+
+    if ! confirm "Enable passwordless sudo for $user?"; then
+        return 0
+    fi
+
+    echo "$user ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$user" > /dev/null
+    sudo chmod 440 "/etc/sudoers.d/$user"
+    info "Passwordless sudo configured for $user."
+}
+
+install_gpg() {
+    if ! command -v gpg &>/dev/null; then
+        log_error "gpg is not installed. Run 'dot install packages' first."
+        return 1
+    fi
+    if ! command -v gh &>/dev/null; then
+        log_error "gh is not installed. Run 'dot install packages' first."
+        return 1
+    fi
+    if ! gh auth status &>/dev/null 2>&1; then
+        log_error "GitHub CLI is not authenticated. Run 'dot install gh' first."
+        return 1
+    fi
+
+    local name="Keksi"
+    local email="git@keksi.dev"
+    local expire="3y"
+    local comment="GitHub Signing Key"
+
+    local existing_key
+    existing_key=$(gpg --list-secret-keys --with-colons "$email" 2>/dev/null | awk -F: '/^sec/ {print $5; exit}' || true)
+    if [[ -n "$existing_key" ]]; then
+        warn "GPG key already exists for $email (ID: $existing_key). Skipping."
+        return 0
+    fi
+
+    if ! confirm "Create a GPG signing key for $name <$email>?"; then
+        return 0
+    fi
+
+    local hostname_str
+    hostname_str=$(hostname)
+    local env_tag="Linux"
+    if grep -qi microsoft /proc/version 2>/dev/null; then
+        env_tag="WSL"
+    fi
+
+    spin "Creating Ed25519 GPG key..." bash -c "
+        gpg --batch --full-generate-key <<GPGEOF
+Key-Type: eddsa
+Key-Curve: ed25519
+Subkey-Type: eddsa
+Subkey-Curve: ed25519
+Name-Real: ${name}
+Name-Comment: ${comment} - ${hostname_str} - ${env_tag}
+Name-Email: ${email}
+Expire-Date: ${expire}
+%no-protection
+%commit
+GPGEOF
+    "
+
+    local key_id
+    key_id=$(gpg --list-secret-keys --with-colons "$email" | awk -F: '/^sec/ {print $5; exit}')
+
+    if [[ -z "$key_id" ]]; then
+        log_error "Could not find generated GPG key."
+        return 1
+    fi
+
+    spin "Adding GPG key to GitHub..." bash -c "
+        gpg --armor --export '$key_id' | gh gpg-key add - --title 'GPG Key - ${hostname_str} - ${env_tag} - $(date +%Y-%m-%d)'
+    "
+
+    git config --global user.name "$name"
+    git config --global user.email "$email"
+    git config --global user.signingkey "$key_id"
+    git config --global commit.gpgsign true
+    git config --global gpg.program gpg
+    git config --global include.path "$DOTFILES_DIR/.gitconfig"
+
+    info "GPG key created and added to GitHub (ID: $key_id)."
+}
+
+cmd_update() {
+    log_step "Updating dotfiles..."
+    spin "Pulling latest changes..." git -C "$DOTFILES_DIR" pull
+    backup_conflicts
+    stow_log --verbose=1 --dir="$DOTFILES_DIR" --target="$STOW_TARGET" --restow .config
+    info "Dotfiles updated."
+}
+
+cmd_remove() {
+    log_step "Removing dotfile symlinks..."
+    if ! confirm "This will remove all dotfile symlinks. Continue?"; then
+        return 0
+    fi
+    stow_log --verbose=1 --dir="$DOTFILES_DIR" --target="$STOW_TARGET" -D .config
+    info "Dotfile symlinks removed."
+}
+
+show_menu() {
+    ensure_gum
+
+    local choice
+    choice=$(gum choose \
+        "Install (full setup)" \
+        "Update" \
+        "Remove" \
+        "Configure passwordless sudo" \
+        "Install packages only" \
+        "Stow only" \
+        "Install optional tools" \
+        "Change shell to fish" \
+        "Login to GitHub CLI" \
+        "Setup GPG signing" \
+        "Exit" \
+    )
+
+    case "$choice" in
+        "Install (full setup)")       cmd_install ;;
+        "Update")                     cmd_update ;;
+        "Remove")                     cmd_remove ;;
+        "Configure passwordless sudo") cmd_install sudo ;;
+        "Install packages only")      cmd_install packages ;;
+        "Stow only")                  cmd_install stow ;;
+        "Install optional tools")     cmd_install tools ;;
+        "Change shell to fish")       cmd_install shell ;;
+        "Login to GitHub CLI")        cmd_install gh ;;
+        "Setup GPG signing")          cmd_install gpg ;;
+        "Exit")                       exit 0 ;;
+    esac
+}
+
+usage() {
+    cat <<EOF
+${BOLD}dot${NC} - dotfiles manager
+
+${BOLD}Usage:${NC}
+  dot                    Interactive menu
+  dot <command>          Run a command directly
+
+${BOLD}Commands:${NC}
+  install                Full setup (sudo, packages, stow, tools, shell, gh, gpg)
+  install <step>         Run a single install step:
+                           sudo, packages, stow, tools, shell, gh, gpg
+  update                 Pull latest changes and re-stow
+  remove                 Remove all dotfile symlinks
+
+${BOLD}Examples:${NC}
+  dot install            # full fresh setup
+  dot install stow       # just symlink configs
+  dot update             # pull & re-stow
+EOF
+}
+
+main() {
+    local cmd="${1:-}"
+
+    if [[ -z "$cmd" ]]; then
+        show_menu
+        return 0
+    fi
+
+    case "$cmd" in
+        install) shift 2>/dev/null || true; cmd_install "$@" ;;
+        update)  cmd_update ;;
+        remove)  cmd_remove ;;
+        -h|--help|help) usage ;;
+        *)
+            log_error "Unknown command: $cmd"
+            usage
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

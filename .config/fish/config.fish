@@ -80,6 +80,7 @@ alias poe="uv run poe"
 # Path
 # -------------------------------- #
 
+fish_add_path $HOME/.dotfiles/bin
 fish_add_path $HOME/.opencode/bin
 
 # -------------------------------- #

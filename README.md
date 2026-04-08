@@ -48,91 +48,45 @@ read -p "Enter the username to grant passwordless sudo: " USER && \
 sudo usermod -aG sudo "$USER" && \
 echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/"$USER" > /dev/null && \
 sudo chmod 440 /etc/sudoers.d/"$USER" && \
-echo "✅ User '$USER' can now use sudo without a password."
+echo "User '$USER' can now use sudo without a password."
 ```
 
 ### Installation
 
-1. Install Nala (optional, improves apt UX)
-
-```bash
-curl https://gitlab.com/volian/volian-archive/-/raw/main/install-nala.sh | bash
-sudo apt install -y nala
-```
-
-2. Base packages
-
-```bash
-sudo nala install -y git gh wget curl stow fish gpg starship fastfetch btop bat eza zoxide git-delta
-```
-
-3. Clone and stow
-
 ```bash
 git clone https://github.com/keksiqc/dotfiles ~/.dotfiles
-cd ~/.dotfiles
-stow -v --target="$HOME" .
+~/.dotfiles/bin/dot install
 ```
 
-4. Make Fish your default shell
+This will guide you through:
+- Installing essential packages (git, fish, starship, stow, etc.)
+- Symlinking configs via stow
+- Optional tools (atuin, mise, fisher, ni)
+- Changing default shell to fish
+- GitHub CLI login
+- GPG signing key setup
 
-```bash
-chsh -s /usr/bin/fish
+### The `dot` command
+
+After installation, `dot` is available in your PATH:
+
+```
+dot                  Interactive menu
+dot install          Full setup
+dot install stow     Re-symlink configs only
+dot install packages Install essential packages only
+dot install tools    Install optional tools only
+dot install shell    Change default shell to fish
+dot install gh       Login to GitHub CLI
+dot install gpg      Setup GPG signing key
+dot update           Pull latest changes and re-stow
+dot remove           Remove all dotfile symlinks
 ```
 
-5. Login to GitHub CLI
+### Updating
 
 ```bash
-gh auth login -s write:gpg_key
-```
-
-6. Run GPG script
-
-```bash
-chmod +x ./scripts/create_gpg_key.sh && ./scripts/create_gpg_key.sh
-```
-
-Then log out and back in.
-
-### Optional tools
-
-- Atuin (history sync)
-
-```bash
-curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-```
-
-- Mise (runtime manager)
-
-```bash
-curl https://mise.run | sh
-```
-
-- Fisher (Fish plugin manager)
-
-```bash
-curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
-fisher install jorgebucaran/fisher
-```
-
-- PNPM ni helpers
-
-```bash
-pnpm -g i @antfu/ni
-```
-
-## Updating
-
-```bash
-cd ~/.dotfiles
-git pull
-stow -v --target="$HOME" .
-```
-
-To remove symlinks:
-
-```bash
-stow -v -D --target="$HOME" .
+dot update
 ```
 
 ### Notes on security
