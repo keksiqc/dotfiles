@@ -27,12 +27,13 @@ alias la="$EZA_BASE --all"
 # Essentials
 # -------------------------------- #
 
-alias cd="z"
-alias poe="uv run poe"
 alias neofetch="fastfetch"
 alias fetch="fastfetch"
-alias bat="batcat"
-alias cat="batcat"
+
+if type -q batcat
+  alias bat="batcat"
+  alias cat="batcat"
+end
 
 # -------------------------------- #
 # Node Package Manager
@@ -66,6 +67,7 @@ alias re="nr release"
 # https://github.com/astral-sh/uv
 
 alias uvr="uv run"
+alias poe="uv run poe"
 
 # -------------------------------- #
 # Git
@@ -97,6 +99,7 @@ end
 # zoxide
 if type -q zoxide
   zoxide init fish | source
+  alias cd="z"
 end
 
 # atuin
