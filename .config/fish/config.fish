@@ -97,12 +97,6 @@ if type -q starship
   starship init fish | source
 end
 
-# zoxide
-if type -q zoxide
-  zoxide init fish | source
-  alias cd="z"
-end
-
 # atuin
 if type -q atuin
   atuin init fish | source
@@ -115,5 +109,7 @@ if not string match -q -- $PNPM_HOME $PATH
 end
 # pnpm end
 
-# Vite+ bin (https://viteplus.dev)
-test -f "$HOME/.vite-plus/env.fish" && source "$HOME/.vite-plus/env.fish"
+# zoxide
+if type -q zoxide
+  zoxide init fish --cmd cd | source
+end
