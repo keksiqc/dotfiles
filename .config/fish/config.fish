@@ -92,6 +92,11 @@ if test -f $HOME/.local/bin/mise
   ~/.local/bin/mise activate fish | source
 end
 
+# fzf
+if type -q fzf
+  fzf --fish | source
+end
+
 # starship
 if type -q starship
   starship init fish | source
