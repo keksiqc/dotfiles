@@ -9,6 +9,7 @@ uv = "latest"
 act = "latest"
 actionlint = "latest"
 ni = "latest"
+fzf = "latest"
 
 [settings]
 python.uv_venv_auto = true
