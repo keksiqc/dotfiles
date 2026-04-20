@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-STOW_TARGET="$HOME"
+STOW_TARGET="$HOME/.config"
 
 RED='\033[0;31m'
 CYAN='\033[0;36m'
