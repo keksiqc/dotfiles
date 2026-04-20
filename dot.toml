@@ -1,0 +1,43 @@
+[stow]
+target = "/home/keksi/.config"
+
+[packages]
+apt = [
+  "git",
+  "gh",
+  "wget",
+  "curl",
+  "stow",
+  "fish",
+  "gpg",
+  "starship",
+  "fastfetch",
+  "btop",
+  "bat",
+  "eza",
+  "zoxide",
+  "git-delta",
+]
+
+[gpg]
+name = "Keksi"
+email = "git@keksi.dev"
+expire = "3y"
+
+[[tools]]
+name = "atuin"
+description = "history sync"
+check = "command -v atuin"
+install = "curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh"
+
+[[tools]]
+name = "mise"
+description = "runtime manager"
+check = "test -f $HOME/.local/bin/mise"
+install = "curl https://mise.run | sh"
+
+[[tools]]
+name = "fisher"
+description = "fish plugin manager"
+check = "test -f $HOME/.config/fish/functions/fisher.fish"
+install = "fish -c \"curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source; fisher install jorgebucaran/fisher\""

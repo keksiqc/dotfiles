@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-STOW_TARGET="$HOME/.config"
+CONFIG_FILE="$DOTFILES_DIR/dot.toml"
 
 RED='\033[0;31m'
 CYAN='\033[0;36m'
@@ -55,6 +55,56 @@ ensure_gum() {
 	info "gum installed."
 }
 
+ensure_yq() {
+	local yq_path
+	if command -v yq &>/dev/null && yq --version 2>&1 | grep -q "mikefarah"; then
+		return 0
+	fi
+
+	yq_path="$(mise which yq 2>/dev/null || true)"
+	if [[ -n "$yq_path" ]] && "$yq_path" --version 2>&1 | grep -q "mikefarah"; then
+		PATH="$(dirname "$yq_path"):$PATH"
+		return 0
+	fi
+
+	log_error "Go-based yq (mikefarah/yq) is required but not found."
+	log_error "Install with: mise use -g yq"
+	exit 1
+}
+
+cfg() {
+	local key="$1"
+	if [[ ! -f "$CONFIG_FILE" ]]; then
+		return 1
+	fi
+	yq ".$key" "$CONFIG_FILE" 2>/dev/null
+}
+
+cfg_str() {
+	local key="$1" default="$2"
+	local val
+	val=$(cfg "$key") || echo "$default"
+	[[ -n "$val" && "$val" != "null" ]] && echo "$val" || echo "$default"
+}
+
+cfg_arr() {
+	local key="$1" default="$2"
+	if [[ ! -f "$CONFIG_FILE" ]]; then
+		echo "$default"
+		return
+	fi
+	local val
+	val=$(yq ".$key | length" "$CONFIG_FILE" 2>/dev/null)
+	if [[ -z "$val" || "$val" == "0" || "$val" == "null" ]]; then
+		echo "$default"
+		return
+	fi
+	yq ".$key[]" "$CONFIG_FILE"
+}
+
+STOW_TARGET="$(cfg_str "stow.target" "$HOME/.config")"
+STOW_TARGET="${STOW_TARGET/#\~/$HOME}"
+
 cmd_install() {
 	local subcmd="${1:-}"
 
@@ -93,7 +143,8 @@ cmd_install() {
 
 install_packages() {
 	log_step "Installing essential packages..."
-	local pkgs="git gh wget curl stow fish gpg starship fastfetch btop bat eza zoxide git-delta"
+	local pkgs
+	pkgs=$(cfg_arr "packages.apt" "git gh wget curl stow fish gpg starship fastfetch btop bat eza zoxide git-delta")
 
 	local needed=""
 	for pkg in $pkgs; do
@@ -151,17 +202,50 @@ install_stow() {
 
 install_tools() {
 	log_step "Optional tools..."
-	local tools
-	tools=$(gum choose --no-limit "atuin (history sync)" "mise (runtime manager)" "fisher (fish plugin manager)" || true)
 
-	if [[ -z "$tools" ]]; then
+	local tool_names=()
+	local tool_labels=()
+	local tool_checks=()
+	local tool_installs=()
+
+	if [[ -f "$CONFIG_FILE" ]]; then
+		local count
+		count=$(yq '.tools | length' "$CONFIG_FILE" 2>/dev/null)
+		if [[ -n "$count" && "$count" != "null" && "$count" -gt 0 ]]; then
+			for ((i = 0; i < count; i++)); do
+				local name desc check install
+				name=$(yq ".tools[$i].name" "$CONFIG_FILE")
+				desc=$(yq ".tools[$i].description" "$CONFIG_FILE")
+				check=$(yq ".tools[$i].check" "$CONFIG_FILE")
+				install=$(yq ".tools[$i].install" "$CONFIG_FILE")
+				tool_names+=("$name")
+				tool_labels+=("$name ($desc)")
+				tool_checks+=("$check")
+				tool_installs+=("$install")
+			done
+		fi
+	fi
+
+	if [[ ${#tool_names[@]} -eq 0 ]]; then
+		tool_names=(atuin mise fisher)
+		tool_labels=("atuin (history sync)" "mise (runtime manager)" "fisher (fish plugin manager)")
+		tool_checks=("command -v atuin" "test -f \$HOME/.local/bin/mise" 'test -f $HOME/.config/fish/functions/fisher.fish')
+		tool_installs=('curl --proto "=https" --tlsv1.2 -LsSf https://setup.atuin.sh | sh' 'curl https://mise.run | sh' 'fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source; fisher install jorgebucaran/fisher"')
+	fi
+
+	local choices
+	choices=$(gum choose --no-limit "${tool_labels[@]}" || true)
+
+	if [[ -z "$choices" ]]; then
 		info "No optional tools selected."
 		return 0
 	fi
 
-	echo "$tools" | grep -q "atuin" && install_tool "atuin" "command -v atuin" 'curl --proto "=https" --tlsv1.2 -LsSf https://setup.atuin.sh | sh'
-	echo "$tools" | grep -q "mise" && install_tool "mise" "test -f \$HOME/.local/bin/mise" 'curl https://mise.run | sh'
-	echo "$tools" | grep -q "fisher" && install_tool "fisher" "test -f \$HOME/.config/fish/functions/fisher.fish" 'fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source; fisher install jorgebucaran/fisher"'
+	for i in "${!tool_labels[@]}"; do
+		if echo "$choices" | grep -qF "${tool_labels[$i]}"; then
+			install_tool "${tool_names[$i]}" "${tool_checks[$i]}" "${tool_installs[$i]}"
+		fi
+	done
 }
 
 install_shell() {
@@ -226,9 +310,10 @@ install_gpg() {
 		return 1
 	fi
 
-	local name="Keksi"
-	local email="git@keksi.dev"
-	local expire="3y"
+	local name email expire
+	name="$(cfg_str "gpg.name" "Keksi")"
+	email="$(cfg_str "gpg.email" "git@keksi.dev")"
+	expire="$(cfg_str "gpg.expire" "3y")"
 	local comment="GitHub Signing Key"
 
 	local existing_key
@@ -286,6 +371,10 @@ GPGEOF
 	info "GPG key created and added to GitHub (ID: $key_id)."
 }
 
+cmd_config() {
+	"${EDITOR:-vim}" "$CONFIG_FILE"
+}
+
 cmd_update() {
 	log_step "Updating dotfiles..."
 	spin "Pulling latest changes..." git -C "$DOTFILES_DIR" pull
@@ -320,6 +409,7 @@ show_menu() {
 			"Change shell to fish" \
 			"Login to GitHub CLI" \
 			"Setup GPG signing" \
+			"Edit configuration" \
 			"Exit"
 	)
 
@@ -334,6 +424,7 @@ show_menu() {
 	"Change shell to fish") cmd_install shell ;;
 	"Login to GitHub CLI") cmd_install gh ;;
 	"Setup GPG signing") cmd_install gpg ;;
+	"Edit configuration") cmd_config ;;
 	"Exit") exit 0 ;;
 	esac
 }
@@ -351,17 +442,20 @@ usage() {
 	echo "                           sudo, packages, stow, tools, shell, gh, gpg"
 	echo "  update                 Pull latest changes and re-stow"
 	echo "  remove                 Remove all dotfile symlinks"
+	echo "  config                 Edit dot.toml configuration"
 	echo ""
 	echo -e "${BOLD}Examples:${NC}"
 	echo "  dot install            # full fresh setup"
 	echo "  dot install stow       # just symlink configs"
 	echo "  dot update             # pull & re-stow"
+	echo "  dot config             # edit configuration"
 }
 
 main() {
 	local cmd="${1:-}"
 
 	ensure_gum
+	ensure_yq
 	[[ -n "$cmd" ]] && show_header
 
 	if [[ -z "$cmd" ]]; then
@@ -376,6 +470,7 @@ main() {
 		;;
 	update) cmd_update ;;
 	remove) cmd_remove ;;
+	config) cmd_config ;;
 	-h | --help | help) usage ;;
 	*)
 		log_error "Unknown command: $cmd"
