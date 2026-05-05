@@ -94,17 +94,13 @@ cfg_str() {
 
 cfg_arr() {
 	local key="$1" default="$2"
-	if [[ ! -f "$CONFIG_FILE" ]]; then
-		echo "$default"
-		return
-	fi
 	local val
-	val=$(tomlq -r ".$key | length" "$CONFIG_FILE" 2>/dev/null)
+	val=$(cfg "$key | length" || true)
 	if [[ -z "$val" || "$val" == "0" || "$val" == "null" ]]; then
 		echo "$default"
 		return
 	fi
-	tomlq -r ".$key"'[]' "$CONFIG_FILE"
+	cfg "$key[]"
 }
 
 STOW_TARGET="$(cfg_str "stow.target" "$HOME/.config")"
@@ -116,6 +112,15 @@ ensure_stow_target() {
 		exit 1
 	fi
 	mkdir -p "$STOW_TARGET"
+}
+
+prepare_stow() {
+	ensure_stow_target
+	backup_conflicts
+	# Remove real fish dir so stow folds it into a direct symlink instead of descending into it
+	if [[ -d "$STOW_TARGET/fish" && ! -L "$STOW_TARGET/fish" ]]; then
+		rm -rf "$STOW_TARGET/fish"
+	fi
 }
 
 cmd_install() {
@@ -222,9 +227,7 @@ install_stow() {
 		exit 1
 	fi
 
-	ensure_stow_target
-
-	backup_conflicts
+	prepare_stow
 
 	stow_log --verbose=1 --dir="$DOTFILES_DIR" --target="$STOW_TARGET" .config
 
@@ -241,21 +244,17 @@ install_tools() {
 	local tool_installs=()
 
 	if [[ -f "$CONFIG_FILE" ]]; then
-		local count
-		count=$(tomlq -r '.tools | length' "$CONFIG_FILE" 2>/dev/null)
-		if [[ -n "$count" && "$count" != "null" && "$count" -gt 0 ]]; then
-			for ((i = 0; i < count; i++)); do
-				local name desc check install
-				name=$(tomlq -r ".tools[$i].name" "$CONFIG_FILE")
-				desc=$(tomlq -r ".tools[$i].description" "$CONFIG_FILE")
-				check=$(tomlq -r ".tools[$i].check" "$CONFIG_FILE")
-				install=$(tomlq -r ".tools[$i].install" "$CONFIG_FILE")
-				tool_names+=("$name")
-				tool_labels+=("$name ($desc)")
-				tool_checks+=("$check")
-				tool_installs+=("$install")
-			done
-		fi
+		local tool_data=()
+		mapfile -t tool_data < <(tomlq -r '.tools[]? | .name, .description, .check, .install' "$CONFIG_FILE" 2>/dev/null)
+		local i
+		for ((i = 0; i < ${#tool_data[@]}; i += 4)); do
+			local name="${tool_data[$i]}" desc="${tool_data[$((i + 1))]}"
+			local check="${tool_data[$((i + 2))]}" install="${tool_data[$((i + 3))]}"
+			tool_names+=("$name")
+			tool_labels+=("$name ($desc)")
+			tool_checks+=("$check")
+			tool_installs+=("$install")
+		done
 	fi
 
 	if [[ ${#tool_names[@]} -eq 0 ]]; then
@@ -410,8 +409,7 @@ cmd_config() {
 cmd_update() {
 	log_step "Updating dotfiles..."
 	spin "Pulling latest changes..." git -C "$DOTFILES_DIR" pull
-	ensure_stow_target
-	backup_conflicts
+	prepare_stow
 	stow_log --verbose=1 --dir="$DOTFILES_DIR" --target="$STOW_TARGET" --restow .config
 	info "Dotfiles updated."
 }
