@@ -3,6 +3,7 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CONFIG_FILE="$DOTFILES_DIR/dot.toml"
+PROGRESS_FILE="$DOTFILES_DIR/.dot-install-progress"
 
 RED='\033[0;31m'
 CYAN='\033[0;36m'
@@ -47,26 +48,31 @@ show_header() {
 ensure_gum() {
 	if command -v gum &>/dev/null; then return 0; fi
 
-	log_error "gum is not installed. Installing gum..."
-	sudo mkdir -p /etc/apt/keyrings
-	curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
-	echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
-	sudo apt update && sudo apt install -y gum
+	log_error "gum is not installed. Installing..."
+	if command -v brew &>/dev/null; then
+		brew install gum
+	elif command -v apt &>/dev/null; then
+		sudo mkdir -p /etc/apt/keyrings
+		curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+		echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+		sudo apt update && sudo apt install -y gum
+	else
+		log_error "Install gum manually: https://github.com/charmbracelet/gum#installation"
+		exit 1
+	fi
 	info "gum installed."
 }
 
 ensure_tomlq() {
-	if command -v tomlq &>/dev/null; then
-		return 0
-	fi
+	if command -v tomlq &>/dev/null; then return 0; fi
 
 	log_error "tomlq (kislyuk/yq) is not found. Installing..."
-
-	if command -v apt &>/dev/null; then
+	if command -v brew &>/dev/null; then
+		brew install python-yq
+	elif command -v apt &>/dev/null; then
 		sudo apt update && sudo apt install -y yq
 	else
-		log_error "apt is required to install yq (kislyuk/yq)."
-		log_error "Install with: sudo apt install yq"
+		log_error "Install yq manually: pip install yq"
 		exit 1
 	fi
 
@@ -76,6 +82,10 @@ ensure_tomlq() {
 	fi
 	info "tomlq installed."
 }
+
+step_done() { grep -qxF "$1" "$PROGRESS_FILE" 2>/dev/null; }
+mark_done() { echo "$1" >>"$PROGRESS_FILE"; }
+reset_progress() { rm -f "$PROGRESS_FILE"; }
 
 cfg() {
 	local key="$1"
@@ -134,26 +144,31 @@ cmd_install() {
 	gh) install_gh ;;
 	gpg) install_gpg ;;
 	sudo) install_sudo ;;
+	--reset)
+		reset_progress
+		info "Install progress reset."
+		;;
 	"")
-		install_sudo
-		echo ""
-		install_packages
-		echo ""
-		install_stow
-		echo ""
-		install_tools
-		echo ""
-		install_shell
-		echo ""
-		install_gh
-		echo ""
-		install_gpg
-		echo ""
+		if [[ -f "$PROGRESS_FILE" ]]; then
+			warn "Resuming previous install. Run 'dot install --reset' to start over."
+		fi
+		local steps=(sudo packages stow tools shell gh gpg)
+		local step
+		for step in "${steps[@]}"; do
+			if step_done "$step"; then
+				info "Skipping $step (already completed)."
+			else
+				"install_$step"
+				mark_done "$step"
+			fi
+			echo ""
+		done
+		reset_progress
 		gum style --foreground 212 --bold "Dotfiles installation complete!"
 		;;
 	*)
 		log_error "Unknown install subcommand: $subcmd"
-		echo "Usage: dot install [packages|stow|tools|shell|gh|gpg]"
+		echo "Usage: dot install [packages|stow|tools|shell|gh|gpg|--reset]"
 		exit 1
 		;;
 	esac
@@ -161,24 +176,33 @@ cmd_install() {
 
 install_packages() {
 	log_step "Installing essential packages..."
+	if [[ ! -f "$CONFIG_FILE" ]]; then
+		log_error "dot.toml not found. Run 'dot config' to create it."
+		return 1
+	fi
 	local pkgs
-	pkgs=$(cfg_arr "packages.apt" "git gh wget curl stow fish gpg starship fastfetch btop bat eza zoxide git-delta")
+	pkgs=$(cfg_arr "packages.apt" "")
+	if [[ -z "$pkgs" ]]; then
+		warn "No packages defined in dot.toml under [packages] apt."
+		return 0
+	fi
 
-	local needed=""
+	local -a needed=()
+	local pkg
 	for pkg in $pkgs; do
 		if ! dpkg -s "$pkg" &>/dev/null 2>&1; then
-			needed="$needed $pkg"
+			needed+=("$pkg")
 		fi
 	done
 
-	if [[ -z "$needed" ]]; then
+	if [[ ${#needed[@]} -eq 0 ]]; then
 		info "All essential packages already installed."
 		return 0
 	fi
 
-	spin "Installing packages...$needed" bash -c "
+	spin "Installing ${#needed[@]} packages..." bash -c "
         export DEBIAN_FRONTEND=noninteractive
-        sudo apt update && sudo apt install -y $needed
+        sudo apt update && sudo apt install -y ${needed[*]}
     "
 	info "Essential packages installed."
 }
@@ -258,10 +282,8 @@ install_tools() {
 	fi
 
 	if [[ ${#tool_names[@]} -eq 0 ]]; then
-		tool_names=(atuin mise fisher)
-		tool_labels=("atuin (history sync)" "mise (runtime manager)" "fisher (fish plugin manager)")
-		tool_checks=("command -v atuin" "test -f \$HOME/.local/bin/mise" "test -f \$HOME/.config/fish/functions/fisher.fish")
-		tool_installs=('curl --proto "=https" --tlsv1.2 -LsSf https://setup.atuin.sh | sh' 'curl https://mise.run | sh' 'fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source; fisher install jorgebucaran/fisher"')
+		warn "No tools defined in dot.toml under [[tools]]."
+		return 0
 	fi
 
 	local choices
@@ -322,9 +344,50 @@ install_sudo() {
 		return 0
 	fi
 
-	echo "$user ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$user" >/dev/null
-	sudo chmod 440 "/etc/sudoers.d/$user"
+	local sudoers_file="/etc/sudoers.d/$user"
+	echo "$user ALL=(ALL) NOPASSWD:ALL" | sudo tee "$sudoers_file" >/dev/null
+	if ! sudo visudo -c -f "$sudoers_file" &>/dev/null; then
+		log_error "sudoers validation failed — removing $sudoers_file to avoid lockout."
+		sudo rm -f "$sudoers_file"
+		return 1
+	fi
+	sudo chmod 440 "$sudoers_file"
 	info "Passwordless sudo configured for $user."
+}
+
+gpg_create_key() {
+	local name="$1" email="$2" expire="$3" comment="$4" hostname_str="$5" env_tag="$6"
+	spin "Creating Ed25519 GPG key..." bash -c "
+        gpg --batch --full-generate-key <<GPGEOF
+Key-Type: eddsa
+Key-Curve: ed25519
+Subkey-Type: eddsa
+Subkey-Curve: ed25519
+Name-Real: ${name}
+Name-Comment: ${comment} - ${hostname_str} - ${env_tag}
+Name-Email: ${email}
+Expire-Date: ${expire}
+%no-protection
+%commit
+GPGEOF
+    "
+}
+
+gpg_upload_to_github() {
+	local key_id="$1" hostname_str="$2" env_tag="$3"
+	spin "Adding GPG key to GitHub..." bash -c "
+        gpg --armor --export '$key_id' | gh gpg-key add - --title 'GPG Key - ${hostname_str} - ${env_tag} - $(date +%Y-%m-%d)'
+    "
+}
+
+gpg_configure_git() {
+	local name="$1" email="$2" key_id="$3"
+	git config --global user.name "$name"
+	git config --global user.email "$email"
+	git config --global user.signingkey "$key_id"
+	git config --global commit.gpgsign true
+	git config --global gpg.program gpg
+	git config --global include.path "$DOTFILES_DIR/.gitconfig"
 }
 
 install_gpg() {
@@ -345,7 +408,6 @@ install_gpg() {
 	name="$(cfg_str "gpg.name" "Keksi")"
 	email="$(cfg_str "gpg.email" "git@keksi.dev")"
 	expire="$(cfg_str "gpg.expire" "3y")"
-	local comment="GitHub Signing Key"
 
 	local existing_key
 	existing_key=$(gpg --list-secret-keys --with-colons "$email" 2>/dev/null | awk -F: '/^sec/ {print $5; exit}' || true)
@@ -358,47 +420,21 @@ install_gpg() {
 		return 0
 	fi
 
-	local hostname_str
+	local hostname_str env_tag="Linux"
 	hostname_str=$(hostname)
-	local env_tag="Linux"
-	if grep -qi microsoft /proc/version 2>/dev/null; then
-		env_tag="WSL"
-	fi
+	grep -qi microsoft /proc/version 2>/dev/null && env_tag="WSL"
 
-	spin "Creating Ed25519 GPG key..." bash -c "
-        gpg --batch --full-generate-key <<GPGEOF
-Key-Type: eddsa
-Key-Curve: ed25519
-Subkey-Type: eddsa
-Subkey-Curve: ed25519
-Name-Real: ${name}
-Name-Comment: ${comment} - ${hostname_str} - ${env_tag}
-Name-Email: ${email}
-Expire-Date: ${expire}
-%no-protection
-%commit
-GPGEOF
-    "
+	gpg_create_key "$name" "$email" "$expire" "GitHub Signing Key" "$hostname_str" "$env_tag"
 
 	local key_id
 	key_id=$(gpg --list-secret-keys --with-colons "$email" | awk -F: '/^sec/ {print $5; exit}')
-
 	if [[ -z "$key_id" ]]; then
 		log_error "Could not find generated GPG key."
 		return 1
 	fi
 
-	spin "Adding GPG key to GitHub..." bash -c "
-        gpg --armor --export '$key_id' | gh gpg-key add - --title 'GPG Key - ${hostname_str} - ${env_tag} - $(date +%Y-%m-%d)'
-    "
-
-	git config --global user.name "$name"
-	git config --global user.email "$email"
-	git config --global user.signingkey "$key_id"
-	git config --global commit.gpgsign true
-	git config --global gpg.program gpg
-	git config --global include.path "$DOTFILES_DIR/.gitconfig"
-
+	gpg_upload_to_github "$key_id" "$hostname_str" "$env_tag"
+	gpg_configure_git "$name" "$email" "$key_id"
 	info "GPG key created and added to GitHub (ID: $key_id)."
 }
 
@@ -407,8 +443,19 @@ cmd_config() {
 }
 
 cmd_update() {
+	local dry_run=false
+	[[ "${1:-}" == "--dry-run" ]] && dry_run=true
+
 	log_step "Updating dotfiles..."
 	spin "Pulling latest changes..." git -C "$DOTFILES_DIR" pull
+
+	if $dry_run; then
+		info "Dry run — showing what would change:"
+		stow --simulate --verbose=1 --dir="$DOTFILES_DIR" --target="$STOW_TARGET" --restow .config 2>&1 |
+			while IFS= read -r line; do info "$line"; done
+		return 0
+	fi
+
 	prepare_stow
 	stow_log --verbose=1 --dir="$DOTFILES_DIR" --target="$STOW_TARGET" --restow .config
 	info "Dotfiles updated."
@@ -424,7 +471,6 @@ cmd_remove() {
 }
 
 show_menu() {
-	ensure_gum
 	show_header
 
 	local choice
@@ -471,14 +517,17 @@ usage() {
 	echo "  install                Full setup (sudo, packages, stow, tools, shell, gh, gpg)"
 	echo "  install <step>         Run a single install step:"
 	echo "                           sudo, packages, stow, tools, shell, gh, gpg"
+	echo "  install --reset        Clear saved install progress"
 	echo "  update                 Pull latest changes and re-stow"
+	echo "  update --dry-run       Show what would change without applying"
 	echo "  remove                 Remove all dotfile symlinks"
 	echo "  config                 Edit dot.toml configuration"
 	echo ""
 	echo -e "${BOLD}Examples:${NC}"
-	echo "  dot install            # full fresh setup"
+	echo "  dot install            # full fresh setup (resumes if interrupted)"
 	echo "  dot install stow       # just symlink configs"
 	echo "  dot update             # pull & re-stow"
+	echo "  dot update --dry-run   # preview changes"
 	echo "  dot config             # edit configuration"
 }
 
@@ -499,7 +548,10 @@ main() {
 		shift 2>/dev/null || true
 		cmd_install "$@"
 		;;
-	update) cmd_update ;;
+	update)
+		shift 2>/dev/null || true
+		cmd_update "$@"
+		;;
 	remove) cmd_remove ;;
 	config) cmd_config ;;
 	-h | --help | help) usage ;;
