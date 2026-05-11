@@ -1,19 +1,25 @@
 [tools]
 aube = "latest"
 usage = "latest"
+
+# Languages
+uv = "latest"
 python = "latest"
 node = "latest"
 bun = "latest"
 deno = "latest"
 go = "latest"
-uv = "latest"
+
+# CLI tools
+ni = "latest"
+codex = "latest"
+
+# GitHub Actions
 act = "latest"
 actionlint = "latest"
-ni = "latest"
-fzf = "latest"
 pinact = "latest"
 
 [settings]
-python.uv_venv_auto = true
 experimental = true
+python.uv_venv_auto = true
 idiomatic_version_file_enable_tools = ["python"]
