@@ -6,8 +6,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 if command -v fish &>/dev/null; then
     skip "fish already installed."
 else
-    info "Installing fish 4..."
-    sudo add-apt-repository -y ppa:fish-shell/release-4
+    info "Installing fish..."
     sudo apt update -qq
     sudo apt install -y fish
     success "fish installed."
