@@ -1,6 +1,7 @@
 [tools]
 aube = "latest"
 usage = "latest"
+watchexec = "latest"
 
 # Languages
 uv = "latest"
@@ -12,7 +13,8 @@ go = "latest"
 
 # CLI tools
 ni = "latest"
-codex = "latest"
+nub = "latest"
+pnpm = "latest"
 
 # GitHub Actions
 act = "latest"
