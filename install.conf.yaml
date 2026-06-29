@@ -1,0 +1,17 @@
+- defaults:
+    link:
+      relink: true
+
+- clean: ['~']
+
+- link:
+    ~/.config/fish/config.fish: .config/fish/config.fish
+    ~/.config/mise/config.toml: .config/mise/config.toml
+    ~/.config/starship.toml: .config/starship.toml
+
+- create:
+    - ~/i
+
+- shell:
+    - "curl -fsSL https://starship.rs/install.sh | sh"
+    
