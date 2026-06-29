@@ -42,8 +42,7 @@ sudo apt install -y git
 ### Installation
 
 ```bash
-git clone https://github.com/keksiqc/dotfiles ~/.dotfiles
-~/.dotfiles/bin/dot install
+git clone https://github.com/keksiqc/dotfiles ~/.dotfiles && ~/.dotfiles/install
 ```
 
 This will guide you through:
