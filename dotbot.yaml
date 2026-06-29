@@ -1,0 +1,34 @@
+- defaults:
+    link:
+      relink: true
+      create: true
+    shell:
+      stdin: true
+      stdout: true
+      stderr: true
+
+- clean: ["~"]
+
+- link:
+    ~/.config/fish/config.fish: .config/fish/config.fish
+    ~/.config/mise/config.toml: .config/mise/config.toml
+    ~/.config/fastfetch/config.jsonc: .config/fastfetch/config.jsonc
+    ~/.config/starship.toml: .config/starship.toml
+    ~/.config/topgrade.toml: .config/topgrade.toml
+    ~/.config/bat/: .config/bat/
+    ~/.config/btop/: .config/btop/
+
+- create:
+    - ~/i
+
+- shell:
+    - command: scripts/packages.sh
+      description: Install apt packages
+    - command: "curl -fsSL https://starship.rs/install.sh | sudo sh"
+      description: Install starship
+    - command: scripts/mise.sh
+      description: Install mise and packages
+    - command: scripts/fish.sh
+      description: Install fish, set as default shell, install fisher and plugins
+    - command: scripts/gh.sh
+      description: Install gh, authenticate, and set up GPG signing
