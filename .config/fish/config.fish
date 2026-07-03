@@ -92,6 +92,11 @@ if test -f $HOME/.local/bin/mise
   ~/.local/bin/mise activate fish | source
 end
 
+# brew
+if test -f /home/linuxbrew/.linuxbrew/bin/brew
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv fish)"
+end
+
 # fzf
 if type -q fzf
   fzf --fish | source
