@@ -70,6 +70,16 @@ alias uvr="uv run"
 alias poe="uv run poe"
 
 # -------------------------------- #
+# Mise
+# -------------------------------- #
+# https://github.com/jdx/mise
+
+alias m="mise"
+alias mr="mise run"
+alias mx="mise exec"
+alias mi="mise install"
+
+# -------------------------------- #
 # Git
 # -------------------------------- #
 
