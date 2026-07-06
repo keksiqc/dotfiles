@@ -11,6 +11,7 @@
 
 - link:
     ~/.config/fish/config.fish: .config/fish/config.fish
+    ~/.config/fish/themes: .config/fish/themes
     ~/.config/mise/config.toml: .config/mise/config.toml
     ~/.config/fastfetch/config.jsonc: .config/fastfetch/config.jsonc
     ~/.config/starship.toml: .config/starship.toml
