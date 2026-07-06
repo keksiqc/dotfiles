@@ -7,7 +7,9 @@ if command -v mise &>/dev/null; then
     skip "mise already installed."
 else
     info "Installing mise..."
-    curl -fsSL https://mise.run | sh
+    sudo add-apt-repository -y ppa:jdxcode/mise
+    sudo apt update
+    sudo apt install -y mise
     success "mise installed."
 fi
 
