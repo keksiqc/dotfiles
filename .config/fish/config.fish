@@ -90,6 +90,7 @@ alias mi="mise install"
 # Path
 # -------------------------------- #
 
+fish_add_path $HOME/.local/bin
 fish_add_path $HOME/.opencode/bin
 
 # -------------------------------- #
