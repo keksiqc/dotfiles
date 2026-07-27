@@ -32,5 +32,6 @@ pi = "latest"
 idiomatic_version_file_enable_tools = ["python", "node"]
 trusted_config_paths = ["~/i"]
 
-python.uv_venv_auto = "create|source"
-python.compile = false
+[settings.python]
+uv_venv_auto = "create|source"
+compile = false
