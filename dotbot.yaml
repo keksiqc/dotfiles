@@ -25,8 +25,6 @@
 - shell:
     - command: scripts/packages.sh
       description: Install apt packages
-    - command: "curl -fsSL https://starship.rs/install.sh | sudo sh"
-      description: Install starship
     - command: scripts/mise.sh
       description: Install mise and packages
     - command: scripts/fish.sh

@@ -21,6 +21,8 @@ sudo apt install -y \
     bat \
     eza \
     zoxide \
-    git-delta
+    git-delta \
+    starship \
+    fzf
 
 success "Packages installed."
