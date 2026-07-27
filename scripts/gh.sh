@@ -43,8 +43,6 @@ GPGEOF
         | gh gpg-key add - --title "GPG Key - ${hostname_str} - ${env_tag} - $(date +%Y-%m-%d)"
 
     info "Configuring git signing..."
-    git config --global user.name "$GPG_NAME"
-    git config --global user.email "$GPG_EMAIL"
     git config --global user.signingkey "$key_id"
     git config --global commit.gpgsign true
     git config --global gpg.program gpg
