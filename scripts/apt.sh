@@ -15,7 +15,7 @@ info "Adding apt repositories..."
 sudo extrepo enable mise
 sudo extrepo enable github-cli
 
-sudo add-apt-repository ppa:fish-shell/release-4
+sudo add-apt-repository ppa:fish-shell/release-4 -y
 success "Apt repositories added."
 
 info "Updating apt packages..."
