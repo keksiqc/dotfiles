@@ -1,0 +1,17 @@
+[bootstrap.user]
+login_shell = "/usr/bin/fish"
+
+[bootstrap.packages]
+"apt:bat" = "latest"
+"apt:btop" = "latest"
+"apt:curl" = "latest"
+"apt:eza" = "latest"
+"apt:fastfetch" = "latest"
+"apt:fzf" = "latest"
+"apt:git" = "latest"
+"apt:git-delta" = "latest"
+"apt:gpg" = "latest"
+"apt:starship" = "latest"
+"apt:stow" = "latest"
+"apt:wget" = "latest"
+"apt:zoxide" = "latest"

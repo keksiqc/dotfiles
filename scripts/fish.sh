@@ -12,14 +12,6 @@ else
     success "fish installed."
 fi
 
-if [[ "$SHELL" == "$(command -v fish)" ]]; then
-    skip "fish is already the default shell."
-else
-    info "Setting fish as default shell..."
-    chsh -s "$(command -v fish)"
-    success "Default shell set to fish."
-fi
-
 if test -f "$HOME/.config/fish/functions/fisher.fish"; then
     skip "fisher already installed."
 else

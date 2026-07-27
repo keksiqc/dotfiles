@@ -16,7 +16,7 @@ fi
 info "Running mise trust..."
 mise trust
 
-info "Installing mise packages..."
-mise install
+info "Running mise bootstrap..."
+mise bootstrap
 
 success "mise setup complete."
