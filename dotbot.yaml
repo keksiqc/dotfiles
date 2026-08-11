@@ -13,6 +13,7 @@
     ~/.config/fish/config.fish: .config/fish/config.fish
     ~/.config/fish/themes: .config/fish/themes
     ~/.config/mise/: .config/mise/
+    ~/.config/atuin/config.toml: .config/atuin/config.toml
     ~/.config/fastfetch/config.jsonc: .config/fastfetch/config.jsonc
     ~/.config/starship.toml: .config/starship.toml
     ~/.config/topgrade.toml: .config/topgrade.toml
