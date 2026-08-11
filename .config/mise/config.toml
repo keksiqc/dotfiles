@@ -10,6 +10,7 @@ node = "latest"
 bun = "latest"
 deno = "latest"
 go = "latest"
+rust = "latest"
 
 # CLI tools
 ni = "latest"
