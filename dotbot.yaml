@@ -33,3 +33,5 @@
       description: Install fisher and fish plugins
     - command: scripts/gh.sh
       description: Authenticate github cli, and set up GPG signing
+    - command: scripts/pass.sh
+      description: Install pass-cli and enable ssh agent

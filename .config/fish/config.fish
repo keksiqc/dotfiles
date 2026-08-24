@@ -27,6 +27,8 @@ alias la="$EZA_BASE --all"
 # Essentials
 # -------------------------------- #
 
+set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
+
 alias neofetch="fastfetch"
 alias fetch="fastfetch"
 

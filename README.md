@@ -53,29 +53,7 @@ This will guide you through:
 - Changing default shell to fish
 - GitHub CLI login
 - GPG signing key setup
-
-### The `dot` command
-
-After installation, `dot` is available in your PATH:
-
-```
-dot                  Interactive menu
-dot install          Full setup
-dot install stow     Re-symlink configs only
-dot install packages Install essential packages only
-dot install tools    Install optional tools only
-dot install shell    Change default shell to fish
-dot install gh       Login to GitHub CLI
-dot install gpg      Setup GPG signing key
-dot update           Pull latest changes and re-stow
-dot remove           Remove all dotfile symlinks
-```
-
-### Updating
-
-```bash
-dot update
-```
+- Proton Pass setup
 
 ### Notes on security
 
