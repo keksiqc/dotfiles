@@ -10,6 +10,7 @@
 - clean: ["~"]
 
 - link:
+    ~/.config/systemd/user/proton-pass-ssh-agent.service: .config/systemd/user/proton-pass-ssh-agent.service
     ~/.config/fish/config.fish: .config/fish/config.fish
     ~/.config/fish/themes: .config/fish/themes
     ~/.config/mise/: .config/mise/

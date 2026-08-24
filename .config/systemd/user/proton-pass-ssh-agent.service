@@ -1,0 +1,9 @@
+[Unit]
+Description=Proton Pass SSH Agent
+
+[Service]
+ExecStart=/home/youruser/.local/bin/pass-cli ssh-agent start --socket-path %h/.ssh/proton-pass-agent.sock
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
