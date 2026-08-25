@@ -17,6 +17,7 @@ rust = "latest"
 ni = "latest"
 nub = "latest"
 pnpm = "latest"
+pipx = "latest"
 
 # GitHub Actions
 act = "latest"
