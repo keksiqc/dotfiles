@@ -1,7 +1,6 @@
 [tools]
 atuin = "latest"
 aube = "latest"
-usage = "latest"
 watchexec = "latest"
 
 # Languages
