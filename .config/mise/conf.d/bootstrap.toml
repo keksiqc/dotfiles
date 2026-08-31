@@ -2,7 +2,6 @@
 login_shell = "/usr/bin/fish"
 
 [bootstrap.packages]
-"brew:protonpass/tap/pass-cli" = "latest"
 "apt:bat" = "latest"
 "apt:btop" = "latest"
 "apt:curl" = "latest"
