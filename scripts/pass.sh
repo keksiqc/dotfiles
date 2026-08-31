@@ -3,6 +3,14 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
+if ! command -v pass-cli &>/dev/null; then
+    info "Installing pass-cli..."
+    curl -fsSL https://proton.me/download/pass-cli/install.sh | bash
+    success "pass-cli installed."
+else 
+    info "pass-cli already installed."
+fi 
+
 if pass-cli info &>/dev/null; then
     skip "pass-cli already authenticated."
 else
@@ -10,8 +18,3 @@ else
     pass-cli login
     success "Authenticated with Proton Pass."
 fi
-
-info "Enabling Proton Pass SSH agent..."
-systemctl --user daemon-reload
-systemctl --user enable --now proton-pass-ssh-agent.service
-success "Proton Pass SSH agent enabled."
