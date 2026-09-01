@@ -12,5 +12,5 @@ else
 fi
 
 info "Installing fisher plugins..."
-fish -c "fisher install joseluisq/gitnow catppuccin/fish"
+fish -c "fisher install joseluisq/gitnow"
 success "fisher plugins installed."
