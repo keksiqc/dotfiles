@@ -24,6 +24,8 @@
     - ~/i
 
 - shell:
+    - command: git submodule update --init --recursive
+      description: Update submodules
     - command: scripts/apt.sh
       description: Add apt repositories, update, and install
     - command: scripts/mise.sh
