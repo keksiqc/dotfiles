@@ -10,3 +10,7 @@ else
     pass-cli login
     success "Authenticated with Proton Pass."
 fi
+
+info "Loading SSH keys from Proton Pass..."
+pass-cli ssh-agent load --vault-name "SSH Keys"
+success "SSH keys loaded from Proton Pass."
