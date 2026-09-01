@@ -26,11 +26,11 @@
 - shell:
     - command: scripts/apt.sh
       description: Add apt repositories, update, and install
-    - command: scripts/pass.sh
-      description: Install pass-cli and enable ssh agent
     - command: scripts/mise.sh
       description: Install mise and packages
     - command: scripts/fish.sh
       description: Install fisher and fish plugins
     - command: scripts/gh.sh
       description: Authenticate github cli, and set up GPG signing
+    - command: scripts/pass.sh
+      description: Authenticate pass-cli and load ssh keys
