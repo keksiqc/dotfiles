@@ -8,7 +8,7 @@ if ! command -v pass-cli &>/dev/null; then
     curl -fsSL https://proton.me/download/pass-cli/install.sh | bash
     success "pass-cli installed."
 else 
-    info "pass-cli already installed."
+    skip "pass-cli already installed."
 fi 
 
 if pass-cli info &>/dev/null; then
