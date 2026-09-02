@@ -13,6 +13,7 @@ go = "latest"
 rust = "latest"
 
 # CLI tools
+gh = "latest"
 ni = "latest"
 nub = "latest"
 pnpm = "latest"
