@@ -97,8 +97,8 @@ fish_add_path $HOME/.local/bin
 # -------------------------------- #
 
 # mise
-if type -q mise
-  mise activate fish | source
+if test -f ~/.local/bin/mise
+  ~/.local/bin/mise activate fish | source
 end
 
 # brew

@@ -3,11 +3,11 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-if command -v mise &>/dev/null; then
+if test -f ~/.local/bin/mise &>/dev/null; then
     skip "mise already installed."
 else
     info "Installing mise..."
-    sudo apt install -y mise
+    curl https://mise.run | sh
     success "mise installed."
 fi
 
