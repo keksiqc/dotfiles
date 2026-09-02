@@ -34,6 +34,8 @@ codex = "latest"
 pi = "latest"
 
 [settings]
+auto_install = true
+auto_update = true
 idiomatic_version_file_enable_tools = ["python", "node"]
 trusted_config_paths = ["~/i"]
 
