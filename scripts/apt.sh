@@ -7,10 +7,6 @@ info "Updating apt packages..."
 sudo apt update -qq
 success "Apt packages updated."
 
-info "Installing extrepo..."
-sudo apt install -y extrepo
-success "extrepo installed."
-
 info "Adding apt repositories..."
 
 info "Adding Fish repository..."
