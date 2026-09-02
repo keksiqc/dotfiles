@@ -92,6 +92,9 @@ alias mi="mise install"
 
 fish_add_path $HOME/.local/bin
 
+# SSH Agent
+eval $(ssh-agent -c) >> /dev/null
+
 # -------------------------------- #
 # Initialization
 # -------------------------------- #
