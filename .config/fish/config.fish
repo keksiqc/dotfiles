@@ -27,6 +27,9 @@ alias la="$EZA_BASE --all"
 # Essentials
 # -------------------------------- #
 
+# SSH Agent
+eval $(ssh-agent -c) >> /dev/null
+
 alias neofetch="fastfetch"
 alias fetch="fastfetch"
 
@@ -91,9 +94,6 @@ alias mi="mise install"
 # -------------------------------- #
 
 fish_add_path $HOME/.local/bin
-
-# SSH Agent
-eval $(ssh-agent -c) >> /dev/null
 
 # -------------------------------- #
 # Initialization
