@@ -27,8 +27,8 @@ alias la="$EZA_BASE --all"
 # Essentials
 # -------------------------------- #
 
-# SSH Agent
-eval $(ssh-agent -c) >> /dev/null
+# SSH
+set -gx PROTON_PASS_KEY_PROVIDER "fs"
 
 alias neofetch="fastfetch"
 alias fetch="fastfetch"
