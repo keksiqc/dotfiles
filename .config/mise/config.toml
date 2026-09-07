@@ -2,7 +2,6 @@
 
 [tools]
 atuin = "latest"
-aube = "latest"
 watchexec = "latest"
 
 # Languages
@@ -20,6 +19,7 @@ ni = "latest"
 nub = "latest"
 pnpm = "latest"
 pipx = "latest"
+"github:aubepkg/aube" = "latest"
 
 # GitHub Actions
 act = "latest"
