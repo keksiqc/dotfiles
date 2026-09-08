@@ -99,11 +99,6 @@ fish_add_path $HOME/.local/bin
 # Initialization
 # -------------------------------- #
 
-# mise
-if test -f ~/.local/bin/mise
-  ~/.local/bin/mise activate fish | source
-end
-
 # brew
 if test -f /home/linuxbrew/.linuxbrew/bin/brew
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv fish)"
@@ -134,4 +129,9 @@ end
 # zoxide
 if type -q zoxide
   zoxide init fish --cmd cd | source
+end
+
+# mise
+if test -f ~/.local/bin/mise
+  ~/.local/bin/mise activate fish | source
 end
