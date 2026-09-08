@@ -19,6 +19,7 @@ ni = "latest"
 nub = "latest"
 pnpm = "latest"
 pipx = "latest"
+viteplus = "latest"
 "github:aubepkg/aube" = "latest"
 
 # GitHub Actions
