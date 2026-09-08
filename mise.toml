@@ -1,0 +1,2 @@
+[hooks]
+enter = ["git pull --rebase"]
