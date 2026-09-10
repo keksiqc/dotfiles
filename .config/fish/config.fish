@@ -33,6 +33,7 @@ set -gx PROTON_PASS_KEY_PROVIDER "fs"
 alias neofetch="fastfetch"
 alias fetch="fastfetch"
 
+# TODO: add latest bat version for bat bin and catppuccin theme integrated
 if type -q batcat
   alias bat="batcat"
   alias cat="batcat"
