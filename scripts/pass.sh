@@ -4,11 +4,11 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
 if pass-cli info &>/dev/null; then
-    skip "pass-cli already authenticated."
+  skip "pass-cli already authenticated."
 else
-    info "Authenticating with Proton Pass..."
-    pass-cli login
-    success "Authenticated with Proton Pass."
+  info "Authenticating with Proton Pass..."
+  pass-cli login
+  success "Authenticated with Proton Pass."
 fi
 
 info "Loading SSH keys from Proton Pass..."
