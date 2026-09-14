@@ -3,18 +3,26 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-if test -f ~/.local/bin/mise &>/dev/null; then
+MISE_BIN="$HOME/.local/bin/mise"
+
+if [[ -x "$MISE_BIN" ]]; then
   skip "mise already installed."
 else
   info "Installing mise..."
   curl https://mise.run | sh
+
+  if [[ ! -x "$MISE_BIN" ]]; then
+    error "mise was not installed at $MISE_BIN."
+    exit 1
+  fi
+
   success "mise installed."
 fi
 
 info "Running mise trust..."
-mise trust
+"$MISE_BIN" trust
 
 info "Running mise bootstrap..."
-mise bootstrap
+"$MISE_BIN" bootstrap
 
 success "mise setup complete."
