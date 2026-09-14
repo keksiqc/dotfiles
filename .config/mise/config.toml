@@ -24,6 +24,7 @@ pnpm = "latest"
 pipx = "latest"
 viteplus = "latest"
 aube = "latest"
+topgrade = "latest"
 
 # GitHub Actions
 act = "latest"
