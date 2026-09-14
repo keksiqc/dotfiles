@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-GPG_NAME="Keksi"
-GPG_EMAIL="git@keksi.dev"
-GPG_EXPIRE="3y"
+GPG_NAME="${DOTFILES_GPG_NAME:-Keksi}"
+GPG_EMAIL="${DOTFILES_GPG_EMAIL:-git@keksi.dev}"
+GPG_EXPIRE="${DOTFILES_GPG_EXPIRE:-3y}"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 DOTFILES_DIR="$(cd -- "${SCRIPT_DIR}/.." && pwd -P)"
