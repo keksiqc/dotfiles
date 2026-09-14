@@ -5,23 +5,41 @@ GPG_NAME="Keksi"
 GPG_EMAIL="git@keksi.dev"
 GPG_EXPIRE="3y"
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+DOTFILES_DIR="$(cd -- "${SCRIPT_DIR}/.." && pwd -P)"
+
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-if gh auth status &>/dev/null; then
+gpg_key_fingerprint() {
+  gpg --list-secret-keys --with-colons "$GPG_EMAIL" 2>/dev/null |
+    awk -F: '
+      $1 == "sec" { in_secret_key = 1; next }
+      in_secret_key && $1 == "fpr" && !fingerprint { fingerprint = $10 }
+      END {
+        if (fingerprint) print fingerprint
+        else exit 1
+      }
+    '
+}
+
+if gh auth status --hostname github.com &>/dev/null; then
   skip "gh already authenticated."
 else
   info "Authenticating with GitHub..."
-  gh auth login -s write:gpg_key
+  gh auth login --hostname github.com --scopes write:gpg_key
   success "Authenticated with GitHub."
 fi
 
-if gpg --list-secret-keys --with-colons "$GPG_EMAIL" 2>/dev/null | grep -q '^sec'; then
+hostname_str=$(hostname)
+env_tag="Linux"
+if grep -qi microsoft /proc/version 2>/dev/null; then
+  env_tag="WSL"
+fi
+
+if key_fingerprint=$(gpg_key_fingerprint); then
   skip "GPG key already exists for $GPG_EMAIL."
 else
   info "Generating GPG key..."
-  hostname_str=$(hostname)
-  env_tag="Linux"
-  grep -qi microsoft /proc/version 2>/dev/null && env_tag="WSL"
 
   gpg --batch --full-generate-key <<GPGEOF
 Key-Type: eddsa
@@ -36,17 +54,28 @@ Expire-Date: ${GPG_EXPIRE}
 %commit
 GPGEOF
 
-  key_id=$(gpg --list-secret-keys --with-colons "$GPG_EMAIL" | awk -F: '/^sec/ {print $5; exit}')
+  key_fingerprint=$(gpg_key_fingerprint)
+  success "GPG key generated."
+fi
+
+short_key_id=${key_fingerprint: -16}
+if gh api --hostname github.com user/gpg_keys --jq '.[].key_id' 2>/dev/null |
+  awk -v key_id="$short_key_id" 'tolower($0) == tolower(key_id) { found = 1 } END { exit !found }'; then
+  skip "GPG key already uploaded to GitHub."
+else
+  info "Refreshing GitHub permissions for GPG key management..."
+  gh auth refresh --hostname github.com --scopes write:gpg_key
 
   info "Uploading GPG key to GitHub..."
-  gpg --armor --export "$key_id" |
+  gpg --armor --export "$key_fingerprint" |
     gh gpg-key add - --title "GPG Key - ${hostname_str} - ${env_tag} - $(date +%Y-%m-%d)"
-
-  info "Configuring git signing..."
-  git config --global user.signingkey "$key_id"
-  git config --global commit.gpgsign true
-  git config --global gpg.program gpg
-  git config --global include.path "~/.dotfiles/.gitconfig"
-
-  success "GPG key created and configured (ID: $key_id)."
+  success "GPG key uploaded to GitHub."
 fi
+
+info "Configuring git signing..."
+git config --global user.signingkey "$key_fingerprint"
+git config --global commit.gpgsign true
+git config --global gpg.program gpg
+git config --global include.path "${DOTFILES_DIR}/.gitconfig"
+
+success "Git signing configured (fingerprint: ${key_fingerprint})."
