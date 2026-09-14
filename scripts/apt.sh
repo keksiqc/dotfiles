@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# shellcheck source=utils.sh
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
 if [[ ! -r /etc/os-release ]]; then
@@ -15,15 +16,7 @@ if [[ "${ID:-}" != "ubuntu" ]]; then
   exit 1
 fi
 
-if ! command -v apt-get &>/dev/null; then
-  error "apt-get is required but was not found."
-  exit 1
-fi
-
-if ! command -v sudo &>/dev/null; then
-  error "sudo is required."
-  exit 1
-fi
+require_command apt-get sudo
 
 info "Installing apt bootstrap prerequisites..."
 sudo apt-get update -qq
