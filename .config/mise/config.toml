@@ -22,7 +22,7 @@ nub = "latest"
 pnpm = "latest"
 pipx = "latest"
 viteplus = "latest"
-"github:aubepkg/aube" = "latest"
+aube = "latest"
 
 # GitHub Actions
 act = "latest"
