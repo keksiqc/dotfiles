@@ -1,30 +1,33 @@
 #:tombi schema.strict = false
 
 [tools]
-atuin = "latest"
-watchexec = "latest"
+# Internals
+watchexec = "latest" 
 
-# Languages
-uv = "latest"
-python = "latest"
-node = "latest"
+# Languages & runtimes
 bun = "latest"
 deno = "latest"
 go = "latest"
+node = "latest"
+python = "latest"
 rust = "latest"
 
-# CLI tools
-bat = "latest"
-gdu = "latest"
-dust = "latest"
-gh = "latest"
+# Package managers
 ni = "latest"
 nub = "latest"
-pnpm = "latest"
 pipx = "latest"
-viteplus = "latest"
+pnpm = "latest"
+uv = "latest"
+
+# CLI tools
+atuin = "latest"
 aube = "latest"
+bat = "latest"
+dust = "latest"
+gdu = "latest"
+gh = "latest"
 topgrade = "latest"
+viteplus = "latest"
 "aqua:protonpass/pass-cli" = "latest"
 
 # GitHub Actions
@@ -34,9 +37,9 @@ pinact = "latest"
 zizmor = "latest"
 
 # AI tools
-opencode = "latest"
 claude = "latest"
 codex = "latest"
+opencode = "latest"
 pi = "latest"
 
 [settings]
