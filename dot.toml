@@ -1,0 +1,47 @@
+# Configuration for ./dot (run ./install). Steps run in the order they appear.
+# See README.md for the full format.
+
+# Remove dead symlinks in ~ that point into this repo.
+clean = ["~"]
+
+create = ["~/i"]
+
+[defaults.link]
+create = true   # create missing parent directories
+relink = true   # replace symlinks that point somewhere else
+
+# target = true links the same path inside this repo (~/.config/bat -> .config/bat).
+[link]
+"~/.config/fish/config.fish" = true
+"~/.config/fish/themes" = true
+"~/.config/mise" = true
+"~/.config/atuin/config.toml" = true
+"~/.config/fastfetch/config.jsonc" = true
+"~/.config/starship.toml" = true
+"~/.config/topgrade.toml" = true
+"~/.config/bat" = true
+"~/.config/btop" = true
+
+[[shell]]
+run = "scripts/sudo.sh"
+desc = "Set up passwordless sudo"
+
+[[shell]]
+run = "scripts/apt.sh"
+desc = "Add apt repositories and update"
+
+[[shell]]
+run = "scripts/mise.sh"
+desc = "Install mise and its packages"
+
+[[shell]]
+run = "scripts/fish.sh"
+desc = "Install fisher and fish plugins"
+
+[[shell]]
+run = "scripts/gh.sh"
+desc = "Authenticate the GitHub CLI and set up git signing"
+
+[[shell]]
+run = "scripts/pass.sh"
+desc = "Authenticate pass-cli and load SSH keys"
