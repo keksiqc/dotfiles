@@ -25,6 +25,7 @@ pipx = "latest"
 viteplus = "latest"
 aube = "latest"
 topgrade = "latest"
+"github:protonpass/pass-cli" = "latest"
 
 # GitHub Actions
 act = "latest"
