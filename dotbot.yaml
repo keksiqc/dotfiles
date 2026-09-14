@@ -26,6 +26,8 @@
 - shell:
     - command: git submodule update --init --recursive
       description: Update submodules
+    - command: scripts/sudo.sh
+      description: Setup sudo privileges
     - command: scripts/apt.sh
       description: Add apt repositories, update, and install
     - command: scripts/mise.sh
