@@ -1,4 +1,4 @@
-# Configuration for ./dot (run ./install). Steps run in the order they appear.
+# Configuration for bin/dot (run ./install). Steps run in the order they appear.
 # See README.md for the full format.
 
 # Remove dead symlinks in ~ that point into this repo.
@@ -22,13 +22,16 @@ relink = true   # replace symlinks that point somewhere else
 "~/.config/bat" = true
 "~/.config/btop" = true
 
-[[shell]]
-run = "scripts/sudo.sh"
-desc = "Set up passwordless sudo"
+[sudo]
+nopasswd = true
 
-[[shell]]
-run = "scripts/apt.sh"
-desc = "Add apt repositories and update"
+[apt]
+update = true
+no-recommends = true
+packages = ["ca-certificates", "curl", "software-properties-common"]
+
+[ppa]
+repos = ["fish-shell/release-4"]
 
 [[shell]]
 run = "scripts/mise.sh"

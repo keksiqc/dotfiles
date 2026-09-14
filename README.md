@@ -45,12 +45,12 @@ sudo apt install -y git
 git clone https://github.com/keksiqc/dotfiles ~/.dotfiles && ~/.dotfiles/install
 ```
 
-This runs [`dot`](./dot) with [`dot.toml`](./dot.toml), which:
+This runs [`bin/dot`](./bin/dot) with [`dot.toml`](./dot.toml), which:
 
 - Removes dead symlinks in `~` that point into this repo
 - Symlinks the configs under `.config/`
 - Sets up passwordless sudo
-- Adds apt repositories (fish)
+- Installs apt prerequisites and adds the fish PPA
 - Installs mise and the tools in `.config/mise`
 - Installs fisher and fish plugins
 - Logs in to the GitHub CLI and sets up GPG commit signing
@@ -67,14 +67,22 @@ Useful flags (all in `./install --help`):
 
 ### dot
 
-`dot` is a single-file, zero-dependency replacement for [dotbot](https://github.com/anishathalye/dotbot).
-It needs nothing but Python 3.11+ (for the built-in TOML parser) and lives in this repo as [`dot`](./dot).
-Copy that one file into any dotfiles repo next to a `dot.toml` and it works.
+`dot` is a dependency-free replacement for [dotbot](https://github.com/anishathalye/dotbot) that reads
+a TOML file. It needs nothing but Python 3.11+ (for the built-in TOML parser) and is laid out like dotbot:
+
+```
+bin/dot            launcher (also: python3 -m dot from the repo root)
+dot/cli.py         argument parsing and the step runner
+dot/context.py     the ctx object handed to plugins
+dot/plugin.py      plugin registry and config helpers
+dot/plugins/       built-in plugins, one file each
+```
 
 #### Config
 
 Every top-level table (or key) in `dot.toml` is a **step**, handled by the plugin of the same name.
 Steps run in the order they appear in the file. `[dot]` and `[defaults]` are settings, not steps.
+To run a plugin twice, add a suffix to the step name: `[apt]` and `[apt-fish]` are both handled by `apt`.
 
 ```toml
 [dot]
@@ -93,6 +101,23 @@ create = ["~/i", "~/.ssh"]    # create directories
 "~/.config/nvim" = { path = "nvim", if = "command -v nvim" }
 "~/.config" = { path = "config/*", glob = true, exclude = ["config/private*"] }
 
+[sudo]
+nopasswd = true               # /etc/sudoers.d/<user>-nopasswd, validated with visudo
+
+[apt]
+update = true                 # apt-get update before installing what is missing
+packages = ["curl", "git"]
+
+[ppa]
+repos = ["fish-shell/release-4"]
+
+[apt-fish]                    # same plugin, later in the run
+packages = ["fish"]
+
+[user]
+shell = "fish"                # login shell (chsh), added to /etc/shells if needed
+groups = ["docker"]           # usermod -aG
+
 [[shell]]
 run = "scripts/mise.sh"
 desc = "Install mise and packages"
@@ -105,42 +130,50 @@ if = "command -v curl"        # skip when this shell condition fails
 | `create` | `mode` (e.g. `0o700`)                                                                                                                                                                  |
 | `clean`  | `force` (remove every dead symlink, not only ones into this repo), `recursive`                                                                                                          |
 | `shell`  | `run` (or `command`), `desc`, `if`, `quiet`, `stdin`/`stdout`/`stderr` (default `true`), `cwd`, `env`                                                                                  |
+| `apt`    | `packages`, `update`, `no-recommends`; skips packages dpkg already has                                                                                                                 |
+| `ppa`    | `repos`, `update` (default `true`); installs `software-properties-common` if needed, skips PPAs already under `/etc/apt`                                                              |
+| `sudo`   | `nopasswd` (default `true`), `user`; refuses to overwrite a differing sudoers file                                                                                                     |
+| `user`   | `shell`, `groups`, `name`                                                                                                                                                              |
 
-`clean` and `create` also accept a table (`[clean] "~" = { force = true }`), and `shell` accepts a plain
-string or a list of strings. Shell steps run in the repo directory with `DOT_BASE_DIR` and `DOT_DRY_RUN` set.
-A failing step stops the run (exit code 1) unless you pass `-k`; a broken config exits with 2.
+`clean`, `create`, `apt` and `ppa` also accept a plain list (`apt = ["curl"]`), and `shell` a plain string.
+Commands run in the repo directory with `DOT_BASE_DIR` and `DOT_DRY_RUN` set, and get `sudo` prefixed
+unless dot already runs as root. A failing step stops the run (exit code 1) unless you pass `-k`;
+a broken config exits with 2.
 
 #### Plugins
 
-A plugin is a Python file that registers a handler for a step name. Point `[dot] plugins` at the file
-(or a directory of files), or pass `--plugin FILE` / `--plugin-dir DIR`.
+A plugin is a Python file that registers a handler for a step name, exactly like the built-ins in
+[`dot/plugins/`](./dot/plugins). Point `[dot] plugins` at the file (or a directory of files), or pass
+`--plugin FILE` / `--plugin-dir DIR`.
 
 ```python
-# plugins/apt.py
+# plugins/brew.py
 import dot
 
 
-@dot.plugin("apt")
-def apt(ctx, data):
-    """[apt] packages = ["fish", "git"]"""
-    packages = data["packages"]
-    missing = [p for p in packages if ctx.run(f"dpkg -s {p}", stdin=False, stdout=False, stderr=False) != 0]
+@dot.plugin("brew")
+def brew(ctx, data):
+    """brew = ["ripgrep", "jq"]  or  [brew] packages = [...]"""
+    packages, options = dot.listing(data, "packages", "brew")
+    _, installed = ctx.capture("brew list --formula")
+    missing = [p for p in packages if p not in installed.split()]
     if not missing:
-        ctx.log.skip("all apt packages are installed")
+        ctx.log.skip("all brew packages are installed")
         return True
     ctx.log.info("installing " + " ".join(missing))
     if ctx.dry_run:
         return True
-    return ctx.run("sudo apt-get install -y " + " ".join(missing)) == 0
+    return ctx.run("brew install " + " ".join(missing)) == 0
 ```
 
 The handler receives the raw TOML value of the step and returns `True` or `False`. Raise `dot.ConfigError`
-for a malformed step. The `ctx` object gives you:
+for a malformed step; `dot.listing`, `dot.entries` and `dot.normalize` parse the common shapes.
+The `ctx` object gives you:
 
-- `ctx.base_dir`, `ctx.home`, `ctx.dry_run`, `ctx.config`
-- `ctx.defaults("apt")` for the `[defaults.apt]` table
+- `ctx.base_dir`, `ctx.home`, `ctx.user`, `ctx.is_root`, `ctx.dry_run`, `ctx.config`
+- `ctx.defaults("brew")` for the `[defaults.brew]` table
 - `ctx.source(path)` and `ctx.target(path)` to resolve paths against the repo or `~`, `ctx.pretty(path)` for output
-- `ctx.run(cmd, ...)`, `ctx.check(condition)`, `ctx.which(cmd)`
+- `ctx.run(cmd, ...)`, `ctx.capture(cmd)`, `ctx.check(condition)`, `ctx.which(cmd)`, `ctx.sudo(cmd)`
 - `ctx.remove(path)`, `ctx.mkdir(path)`, `ctx.symlink(src, dst)`, which all respect `--dry-run`
 - `ctx.log.info / ok / skip / warn / error / debug`
 

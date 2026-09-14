@@ -3,4 +3,4 @@ set -euo pipefail
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-exec "${BASEDIR}/dot" -c "${BASEDIR}/dot.toml" "${@}"
+exec "${BASEDIR}/bin/dot" -c "${BASEDIR}/dot.toml" "${@}"
