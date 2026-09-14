@@ -34,9 +34,8 @@ alias neofetch="fastfetch"
 alias fetch="fastfetch"
 
 # TODO: add latest bat version for bat bin and catppuccin theme integrated
-if type -q batcat
-  alias bat="batcat"
-  alias cat="batcat"
+if type -q bat
+  alias cat="bat"
 end
 
 # -------------------------------- #
