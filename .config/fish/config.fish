@@ -27,7 +27,12 @@ alias la="$EZA_BASE --all"
 # Essentials
 # -------------------------------- #
 
+if not pass-cli ssh-agent daemon status | string match -q "*running*"
+    pass-cli ssh-agent daemon start --vault-name "SSH Keys" --log-file "$HOME/.ssh/proton-pass-agent.log" >>/dev/null
+end
+
 # SSH
+set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
 set -gx PROTON_PASS_KEY_PROVIDER "fs"
 
 alias neofetch="fastfetch"
