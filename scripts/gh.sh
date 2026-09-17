@@ -29,9 +29,13 @@ if gh auth status --hostname github.com &>/dev/null; then
   skip "gh already authenticated."
 else
   info "Authenticating with GitHub..."
-  gh auth login --hostname github.com --scopes write:gpg_key
+  gh auth login --hostname github.com --git-protocol https --web --scopes write:gpg_key
   success "Authenticated with GitHub."
 fi
+
+info "Setting up git authentication for GitHub..."
+gh auth setup-git --hostname github.com
+success "Git authentication for GitHub configured."
 
 hostname_str=$(hostname)
 env_tag="Linux"
