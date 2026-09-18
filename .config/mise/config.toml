@@ -2,7 +2,7 @@
 
 [tools]
 # Internals
-watchexec = "latest" 
+watchexec = "latest"
 
 # Languages & runtimes
 bun = "latest"
