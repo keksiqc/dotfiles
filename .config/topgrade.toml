@@ -14,7 +14,15 @@
 # sudo_command = "sudo"
 
 # Disable specific steps - same options as the command line flag
-disable = ["skills", "viteplus", "claude", "pi"]
+disable = [
+  "atuin",
+  "skills",
+  "vite_plus",
+  "claude_code",
+  "codex",
+  "opencode",
+  "pi",
+]
 
 # Ignore failures for these steps
 # ignore_failures = ["powershell"]
