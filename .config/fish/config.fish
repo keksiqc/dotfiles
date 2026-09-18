@@ -27,8 +27,10 @@ alias la="$EZA_BASE --all"
 # Essentials
 # -------------------------------- #
 
-if not pass-cli ssh-agent daemon status | string match -q "*running*"
-    pass-cli ssh-agent daemon start --vault-name "SSH Keys" --log-file "$HOME/.ssh/proton-pass-agent.log" >>/dev/null
+set PASS_CLI "/home/keksi/.local/share/mise/installs/aqua-protonpass-pass-cli/latest/pass-cli"
+
+if not $PASS_CLI ssh-agent daemon status | string match -q "*running*"
+    $PASS_CLI ssh-agent daemon start --vault-name "SSH Keys" --log-file "$HOME/.ssh/proton-pass-agent.log" >>/dev/null
 end
 
 # SSH
