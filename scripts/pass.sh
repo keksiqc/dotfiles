@@ -13,11 +13,3 @@ else
   pass-cli login
   success "Authenticated with Proton Pass."
 fi
-
-info "Starting SSH agent..."
-if pass-cli ssh-agent daemon status | grep -q "running"; then
-  skip "SSH agent already running."
-else
-  pass-cli ssh-agent daemon start --vault-name "SSH Keys" --log-file "$HOME/.ssh/proton-pass-agent.log" >>/dev/null
-  success "SSH agent started."
-fi

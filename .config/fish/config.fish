@@ -27,14 +27,8 @@ alias la="$EZA_BASE --all"
 # Essentials
 # -------------------------------- #
 
-set PASS_CLI "/home/keksi/.local/share/mise/installs/aqua-protonpass-pass-cli/latest/pass-cli"
-
-if not $PASS_CLI ssh-agent daemon status | string match -q "*running*"
-    $PASS_CLI ssh-agent daemon start --vault-name "SSH Keys" --log-file "$HOME/.ssh/proton-pass-agent.log" >>/dev/null
-end
-
 # SSH
-set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
+# set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
 set -gx PROTON_PASS_KEY_PROVIDER "fs"
 
 alias neofetch="fastfetch"
