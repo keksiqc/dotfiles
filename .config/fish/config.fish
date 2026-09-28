@@ -1,129 +1,40 @@
-# https://github.com/jorgebucaran/fisher
-# curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
-# fisher install catppuccin/fish
-fish_config theme choose "catppuccin-mocha"
+if status is-interactive
+    # Set theme to Catppuccin Mocha
+    fish_config theme choose "catppuccin-mocha"
 
-# -------------------------------- #
-# Directory Listing (eza)
-# -------------------------------- #
-# https://github.com/eza-community/eza
+    # Add local bin to path
+    fish_add_path $HOME/.local/bin
 
-set -gx EZA_BASE "eza --group --header --group-directories-first --long --git --icons"
+    # Better cat with bat
+    command -v bat &> /dev/null && alias cat="bat"
 
-alias l="$EZA_BASE -1"
-alias ls="$EZA_BASE --no-permissions --no-user"
-alias ll="$EZA_BASE"
-alias la="$EZA_BASE --all"
+    # Better ls with eza
+    command -v eza &> /dev/null && alias ls="eza --group --header --group-directories-first --git --icons -1"
 
-# -------------------------------- #
-# Essentials
-# -------------------------------- #
+    # Abbrs
+    abbr l "ls"
+    abbr ll "ls -l"
+    abbr la "ls -la"
+    abbr tree "ls -T"
 
-# SSH
-# set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
-set -gx PROTON_PASS_KEY_PROVIDER "fs"
+    abbr neofetch "fastfetch"
+    abbr fetch "fastfetch"
 
-alias neofetch="fastfetch"
-alias fetch="fastfetch"
+    abbr m "mise"
+    abbr mr "mise run"
+    abbr mx "mise exec"
+    abbr mi "mise install"
 
-if type -q bat
-  alias cat="bat"
-end
+    # Initialization
+    command -v fzf &> /dev/null && fzf --fish | source
+    command -v starship &> /dev/null && starship init fish | source
+    command -v atuin &> /dev/null && atuin init fish | source
+    command -v zoxide &> /dev/null && zoxide init fish --cmd cd | source
+    command -v mise &> /dev/null && mise activate fish | source
 
-# -------------------------------- #
-# Node Package Manager
-# -------------------------------- #
-# https://github.com/antfu/ni
+    # Environment variables
+    set -gx PROTON_PASS_KEY_PROVIDER "fs"
 
-set -gx NI_DEFAULT_AGENT "bun"
-set -gx NI_GLOBAL_AGENT "bun"
-
-alias nrr="nr -r"
-alias ng="na -g"
-alias nio="ni --prefer-offline"
-alias s="nr start"
-alias d="nr dev"
-alias b="nr build"
-alias bw="nr build --watch"
-alias t="nr test"
-alias tu="nr test -u"
-alias tw="nr test --watch"
-alias w="nr watch"
-alias p="nr play"
-alias c="nr typecheck"
-alias lint="nr lint"
-alias lintf="nr lint --fix"
-alias release="nr release"
-alias re="nr release"
-
-# -------------------------------- #
-# Python Package Manager
-# -------------------------------- #
-# https://github.com/astral-sh/uv
-
-alias uvr="uv run"
-alias poe="uv run poe"
-
-# -------------------------------- #
-# Mise
-# -------------------------------- #
-# https://github.com/jdx/mise
-
-alias m="mise"
-alias mr="mise run"
-alias mx="mise exec"
-alias mi="mise install"
-
-# -------------------------------- #
-# Git
-# -------------------------------- #
-
-# Use jj-vcs/jj
-# alias git=jj
-
-# -------------------------------- #
-# Path
-# -------------------------------- #
-
-fish_add_path $HOME/.local/bin
-
-# -------------------------------- #
-# Initialization
-# -------------------------------- #
-
-# brew
-if test -f /home/linuxbrew/.linuxbrew/bin/brew
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv fish)"
-end
-
-# fzf
-if type -q fzf
-  fzf --fish | source
-end
-
-# starship
-if type -q starship
-  starship init fish | source
-end
-
-# atuin
-if type -q atuin
-  atuin init fish | source
-end
-
-# pnpm
-set -gx PNPM_HOME "$HOME/.local/share/pnpm"
-if not string match -q -- "$PNPM_HOME/bin" $PATH
-  set -gx PATH "$PNPM_HOME/bin" $PATH
-end
-# pnpm end
-
-# zoxide
-if type -q zoxide
-  zoxide init fish --cmd cd | source
-end
-
-# mise
-if test -f ~/.local/bin/mise
-  ~/.local/bin/mise activate fish | source
+    set -gx NI_DEFAULT_AGENT "bun"
+    set -gx NI_GLOBAL_AGENT "bun"
 end
