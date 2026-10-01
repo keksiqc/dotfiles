@@ -40,8 +40,8 @@ zizmor = "latest"
 # AI tools
 claude = "latest"
 codex = "latest"
-opencode = "latest"
 pi = "latest"
+"npm:@opencode/cli" = { version = "latest", allow_builds = true }
 
 [settings]
 auto_install = true
