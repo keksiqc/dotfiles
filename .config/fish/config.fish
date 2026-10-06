@@ -5,6 +5,9 @@ if status is-interactive
     # Add local bin to path
     fish_add_path $HOME/.local/bin
 
+    # Add VS Code to path
+    fish_add_path --append "/mnt/c/Users/marlo/AppData/Local/Programs/Microsoft VS Code/bin"
+
     # Better cat with bat
     command -v bat &> /dev/null && alias cat="bat"
 
