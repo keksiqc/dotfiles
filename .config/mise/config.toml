@@ -1,3 +1,4 @@
+#:schema https://mise.jdx.dev/schema/mise.json
 #:tombi schema.strict = false
 
 [tools]
@@ -39,13 +40,13 @@ zizmor = "latest"
 
 # AI tools
 claude = "latest"
-codex = "latest"
+codex = { version = "latest", postinstall = "codex app-server daemon update -y" }
 pi = "latest"
 "npm:@opencode/cli" = { version = "latest", allow_builds = true }
 
 [settings]
 auto_install = true
-auto_update = true
+self_update.auto = true
 idiomatic_version_file_enable_tools = ["python", "node"]
 trusted_config_paths = ["~/i"]
 
