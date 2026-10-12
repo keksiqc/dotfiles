@@ -34,7 +34,7 @@ viteplus = "latest"
 
 # GitHub Actions
 act = "latest"
-actionlint = "latest"
+jactionlint = "latest"
 pinact = "latest"
 zizmor = "latest"
 
