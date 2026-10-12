@@ -45,6 +45,8 @@ pi = "latest"
 "npm:@opencode/cli" = { version = "latest", allow_builds = true }
 
 [settings]
+experimental = true
+install_layout = "identity"
 auto_install = true
 self_update.auto = true
 idiomatic_version_file_enable_tools = ["python", "node"]
