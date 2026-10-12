@@ -40,7 +40,7 @@ zizmor = "latest"
 
 # AI tools
 claude = "latest"
-codex = { version = "latest", postinstall = "codex app-server daemon update -y" }
+codex = { version = "latest", postinstall = "codex app-server daemon update" }
 pi = "latest"
 "npm:@opencode/cli" = { version = "latest", allow_builds = true }
 
