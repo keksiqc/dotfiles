@@ -3,6 +3,8 @@
 
 [tool_alias]
 pass-cli = "aqua:protonpass/pass-cli"
+ansible-lint = "pypi:ansible-lint"
+
 [tools]
 # Internals
 watchexec = "latest"
