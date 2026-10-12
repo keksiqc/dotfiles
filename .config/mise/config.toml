@@ -4,6 +4,7 @@
 [tools]
 # Internals
 watchexec = "latest"
+aube = "latest"
 
 # Languages & runtimes
 bun = "latest"
@@ -22,7 +23,6 @@ uv = "latest"
 
 # CLI tools
 atuin = "latest"
-aube = "latest"
 bat = "latest"
 dust = "latest"
 hk = "latest"
