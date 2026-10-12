@@ -1,6 +1,8 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 #:tombi schema.strict = false
 
+[tool_alias]
+pass-cli = "aqua:protonpass/pass-cli"
 [tools]
 # Internals
 watchexec = "latest"
@@ -30,7 +32,7 @@ gdu = "latest"
 gh = "latest"
 topgrade = "latest"
 viteplus = "latest"
-"aqua:protonpass/pass-cli" = "latest"
+pass-cli = "latest"
 
 # GitHub Actions
 act = "latest"
@@ -40,9 +42,9 @@ zizmor = "latest"
 
 # AI tools
 claude = "latest"
-codex = { version = "latest", postinstall = "codex app-server daemon update" }
+codex = "latest"
 pi = "latest"
-"npm:@opencode/cli" = { version = "latest", allow_builds = true }
+opencode = "latest"
 
 [settings]
 experimental = true
