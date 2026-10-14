@@ -1,6 +1,9 @@
 [bootstrap.user]
 login_shell = "/usr/bin/fish"
 
+[bootstrap.apt.sources]
+fish = { ppa = "fish-shell/release-4" }
+
 [bootstrap.packages]
 "apt:btop" = "latest"
 "apt:curl" = "latest"

@@ -29,8 +29,6 @@
       description: Update submodules
     - command: scripts/sudo.sh
       description: Setup sudo privileges
-    - command: scripts/apt.sh
-      description: Add apt repositories, update, and install
     - command: scripts/mise.sh
       description: Install mise and packages
     - command: scripts/fish.sh
