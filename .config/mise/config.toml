@@ -36,6 +36,7 @@ topgrade = "latest"
 viteplus = "latest"
 oxfmt = "latest"
 oxlint = "latest"
+hadolint = "latest"
 pass-cli = "latest"
 
 # GitHub Actions
