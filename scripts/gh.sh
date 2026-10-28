@@ -33,10 +33,6 @@ else
   success "Authenticated with GitHub."
 fi
 
-info "Setting up git authentication for GitHub..."
-gh auth setup-git --hostname github.com
-success "Git authentication for GitHub configured."
-
 hostname_str=$(hostname)
 env_tag="Linux"
 if grep -qi microsoft /proc/version 2>/dev/null; then
