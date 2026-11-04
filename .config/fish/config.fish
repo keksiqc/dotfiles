@@ -36,6 +36,8 @@ if status is-interactive
     command -v mise &> /dev/null && mise activate fish | source
 
     # Environment variables
+    set -gx SSH_AUTH_SOCK "$HOME/.ssh/proton-pass-agent.sock"
+
     set -gx PROTON_PASS_KEY_PROVIDER "fs"
 
     set -gx GHTKN_OPEN_BROWSER "false"
