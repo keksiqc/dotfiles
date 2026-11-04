@@ -38,6 +38,9 @@ if status is-interactive
     # Environment variables
     set -gx PROTON_PASS_KEY_PROVIDER "fs"
 
+    set -gx GHTKN_OPEN_BROWSER "false"
+    set -gx GHTKN_BACKEND "text"
+
     set -gx NI_DEFAULT_AGENT "bun"
     set -gx NI_GLOBAL_AGENT "bun"
 end
