@@ -1,4 +1,4 @@
-[bootstrap.linux.systemd.units.proton-ssh-agent]
+[bootstrap.linux.systemd.units.proton-pass-agent]
 description = "Proton Pass SSH Agent"
 exec_start = "/home/keksi/.local/share/mise/installs/pass-cli/latest/pass-cli ssh-agent start --socket-path %h/.ssh/proton-pass-agent.sock"
 restart = "on-failure"
