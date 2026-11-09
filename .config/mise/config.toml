@@ -63,3 +63,6 @@ trusted_config_paths = ["~/i"]
 [settings.python]
 uv_venv_auto = "create|source"
 compile = false
+
+[settings.github]
+credential_command = "ghtkn get -m 1h"
