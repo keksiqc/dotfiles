@@ -4,6 +4,7 @@
 [tool_alias]
 pass-cli = "aqua:protonpass/pass-cli"
 ansible-lint = "pypi:ansible-lint"
+ryl = "aqua:owenlamont/ryl"
 
 [tools]
 # Internals
@@ -39,6 +40,7 @@ oxfmt = "latest"
 oxlint = "latest"
 hadolint = "latest"
 pass-cli = "latest"
+ryl = "latest"
 
 # GitHub Actions
 act = "latest"
